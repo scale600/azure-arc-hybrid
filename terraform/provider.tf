@@ -7,6 +7,14 @@ terraform {
       version = "~> 4.0"
     }
   }
+
+  backend "azurerm" {
+    resource_group_name  = "arc-hybrid-lab"
+    storage_account_name = "archylabtfstate"
+    container_name       = "tfstate"
+    key                  = "terraform.tfstate"
+    use_azuread_auth     = true
+  }
 }
 
 # Authenticates via the Azure CLI (`az login`) locally, or via OIDC
