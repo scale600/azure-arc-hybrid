@@ -12,7 +12,7 @@ Technology stack for the Azure Arc Hybrid Governance Lab. Everything is chosen t
 | Observability | Azure Monitor / Log Analytics (DCR) | Free (5GB/mo) |
 | IaC | Terraform + `azurerm` provider | Free |
 | Config management | Ansible + `azure.azcollection` | Free |
-| Virtualization | UTM (Apple Virtualization framework) | Free |
+| Virtualization | Multipass (CLI, Apple Silicon) | Free |
 | Guest OS | Ubuntu 22.04 LTS (arm64) | Free |
 | Security audit | Lynis | Free |
 | Presentation | Astro + Tailwind CSS (static) | Free |
@@ -46,7 +46,7 @@ Technology stack for the Azure Arc Hybrid Governance Lab. Everything is chosen t
 
 ## Virtualization & OS
 
-- **UTM** — hypervisor using the Apple Virtualization framework (fast ARM-native)
+- **Multipass** — Canonical CLI VM manager (Apple Silicon native, `multipass launch/exec/shell`)
 - **Ubuntu 22.04 LTS (arm64)** — guest OS on 2 VMs
 
 ## Scripting & Automation

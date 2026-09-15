@@ -2,7 +2,7 @@
 
 Concrete, verifiable build items for the Azure Arc Hybrid Governance Lab, broken down from the PRD milestones (M0–M8).
 
-> **Status:** `⬜ not started` · Last updated 2026-09-15
+> **Status:** `✅ M0 complete` · Last updated 2026-09-15
 >
 > Legend: `[ ]` = not done · `[x]` = done
 
@@ -10,10 +10,10 @@ Concrete, verifiable build items for the Azure Arc Hybrid Governance Lab, broken
 
 ## Prerequisites
 
-- [ ] Azure account with an active subscription (tenant/subscription recorded in `.env`)
-- [ ] Apple Silicon macOS host (M3 Pro) with [UTM](https://mac.getutm.app/) installed
-- [ ] CLIs installed: `az`, `gh`, `terraform` (≥1.5), `ansible`
-- [ ] GitHub repo `scale600/azure-arc-hybrid` cloned locally
+- [x] Azure account with an active subscription (tenant/subscription recorded in `.env`)
+- [x] Apple Silicon macOS host (M3 Pro) with Multipass installed
+- [x] CLIs installed: `az`, `gh`, `terraform` (≥1.5), `ansible`
+- [x] GitHub repo `scale600/azure-arc-hybrid` cloned locally
 - [ ] Cloudflare account with access to the `techcloudup.com` zone
 
 ---
@@ -22,13 +22,13 @@ Concrete, verifiable build items for the Azure Arc Hybrid Governance Lab, broken
 
 **Done when:** 2 Ubuntu VMs are reachable over SSH and Azure billing has a $0 alert.
 
-- [ ] Download Ubuntu 22.04 LTS **arm64** server ISO
-- [ ] Create `VM-01` in UTM (2 vCPU / 2 GB / 20 GB, shared network)
-- [ ] Create `VM-02` in UTM (same spec)
-- [ ] Confirm outbound HTTPS (443) works from both VMs (UTM shared network)
-- [ ] SSH into both VMs from the host
-- [ ] Set a **$0 budget alert** in Azure Cost Management
-- [ ] Verify `az account show` returns the lab subscription
+- [x] Install Multipass (`brew install --cask multipass`)
+- [x] Create `VM-01` with Multipass (2 vCPU / 2 GB / 8 GB)
+- [x] Create `VM-02` with Multipass (same spec)
+- [x] Confirm outbound HTTPS (443) works from both VMs (Multipass NAT network)
+- [x] SSH into both VMs from the host
+- [x] Set a **$0 budget alert** in Azure Cost Management
+- [x] Verify `az account show` returns the lab subscription
 
 ---
 
@@ -42,7 +42,7 @@ Concrete, verifiable build items for the Azure Arc Hybrid Governance Lab, broken
 - [ ] Run `azcmagent connect` on `VM-01`
 - [ ] Run `azcmagent connect` on `VM-02`
 - [ ] Verify both machines appear as `Connected` in the Arc portal
-- [ ] Write `scripts/onboard-linux.sh` (idempotent + parameterized)
+- [x] Write `scripts/onboard-linux.sh` (idempotent + parameterized)
 - [ ] Write an Ansible onboarding playbook using `azure.azcollection`
 
 ---
@@ -133,7 +133,7 @@ Concrete, verifiable build items for the Azure Arc Hybrid Governance Lab, broken
 
 | Milestone | Scope | Status |
 |---|---|---|
-| M0 | Local environment (UTM + VMs) | ⬜ |
+| M0 | Local environment (Multipass + VMs) | ✅ |
 | M1 | Arc onboarding | ⬜ |
 | M2 | Terraform IaC | ⬜ |
 | M3 | Azure Policy | ⬜ |

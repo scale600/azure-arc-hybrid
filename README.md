@@ -29,7 +29,7 @@ See [docs/PRD.md](docs/PRD.md) for the full cost verification and corrections to
 ```
 Local Host (Apple Silicon M3 Pro)                Azure
 ┌─────────────────────────────┐       ┌──────────────────────────────┐
-│  UTM                         │       │  Arc control plane (free)    │
+│  Multipass                   │       │  Arc control plane (free)    │
 │   ├─ VM-01 Ubuntu 22.04     │ HTTPS │   · inventory, RBAC, tags     │
 │   └─ VM-02 Ubuntu 22.04     ├──────▶│  Azure Policy (free) ×3       │
 │        azcmagent (Arc agent) │  443  │  Azure Update Manager (free)  │
@@ -39,13 +39,13 @@ Local Host (Apple Silicon M3 Pro)                Azure
 
 ## Platform note
 
-The host is Apple Silicon (ARM64), so x86_64 Windows Server cannot run natively. The lab uses **All-Linux (Ubuntu 22.04 LTS)** with **UTM** (Apple Virtualization framework) for fast, native ARM VMs.
+The host is Apple Silicon (ARM64), so x86_64 Windows Server cannot run natively. The lab uses **All-Linux (Ubuntu 22.04 LTS)** with **Multipass** for fast, native ARM VMs.
 
 ## Quick start
 
 | Stage | Action |
 |---|---|
-| **M0** | Install [UTM](https://mac.getutm.app/), create 2× Ubuntu 22.04 arm64 VMs (2 vCPU / 2GB / 20GB) |
+| **M0** | Install Multipass, create 2× Ubuntu 22.04 arm64 VMs (2 vCPU / 2GB / 8GB) |
 | **M1** | Run `scripts/onboard-linux.sh` on each VM to connect to Azure Arc |
 | **M2** | Configure Terraform (`terraform/`) and run `terraform apply` |
 | **M3** | Assign 3 Azure Policies (tag / region / AMA) |

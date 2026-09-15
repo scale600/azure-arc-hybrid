@@ -75,9 +75,9 @@ Onboard 2 local VMs (simulating on-premises servers) to Azure Arc, and combine T
 
 ```
 ┌─ Local Host (macOS / Apple Silicon M3 Pro) ─────────────┐
-│  UTM (Apple Virtualization framework)                     │
-│   ├─ VM-01  Ubuntu 22.04 LTS (arm64)  2vCPU/2GB/20GB    │
-│   └─ VM-02  Ubuntu 22.04 LTS (arm64)  2vCPU/2GB/20GB    │
+│  Multipass (Canonical CLI VM manager)                        │
+│   ├─ VM-01  Ubuntu 22.04 LTS (arm64)  2vCPU/2GB/8GB     │
+│   └─ VM-02  Ubuntu 22.04 LTS (arm64)  2vCPU/2GB/8GB     │
 │        │  each VM: Azure Connected Machine Agent          │
 │        │  (azcmagent connect → Azure Arc)                │
 └────────┼─────────────────────────────────────────────────┘
@@ -133,7 +133,7 @@ GitHub Actions (scheduled)            Cloudflare Pages
 | ~~Machine Configuration~~ | ~~$6/server/month~~ | **not used** (excluded) |
 | ~~Defender / Sentinel~~ | ~~paid~~ | **not used** (excluded) |
 | OS | **Free** | Ubuntu 22.04 LTS (permanently free) |
-| Virtualization | **Free** | UTM (open-source, free) |
+| Virtualization | **Free** | Multipass (open-source) |
 | CIS audit | **Free** | Lynis (open-source) |
 | GitHub Actions | **Free** | public repo |
 | Cloudflare Pages | **Free** | static hosting + custom domain |
@@ -146,7 +146,7 @@ GitHub Actions (scheduled)            Cloudflare Pages
 
 | Stage | Content | Artifact | Free? |
 |---|---|---|---|
-| **M0** | Create 2 Ubuntu 22.04 arm64 VMs in UTM; prepare Azure subscription | 2 VMs + `.env` | Free |
+| **M0** | Create 2 Ubuntu 22.04 arm64 VMs with Multipass; prepare Azure subscription | 2 VMs + `.env` | Free |
 | **M1** | Write and run Arc onboarding script | `scripts/onboard-linux.sh` | Free |
 | **M2** | Terraform IaC (RG, tags, Policy, workspace) | `terraform/` | Free |
 | **M3** | 3 Azure Policy governance policies (tag/region/AMA) | `terraform/policies/` | Free |
@@ -196,7 +196,7 @@ azure-arc-hybrid-lab/
 | Azure free-tier policy changes | breaks $0 | set a budget alert at M0 |
 | Terraform→Azure auth | CI failure | GitHub Actions OIDC (workload identity), no secrets |
 | Secrets hardcoded in onboarding script | security risk | service principal + least privilege; secrets only in `.env`/Actions Secrets |
-| UTM networking misconfiguration | VM↔internet failure | use UTM shared network for outbound 443 |
+| Multipass networking misconfiguration | VM↔internet failure | use Multipass default NAT network for outbound 443 |
 
 ---
 
@@ -211,9 +211,9 @@ A personal, hands-on project to explore hybrid governance with Azure Arc: simula
 | Item | Decision | Rationale |
 |---|---|---|
 | VM config | **Ubuntu 22.04 LTS × 2 (All-Linux)** | Windows Server x86 can't run on Apple Silicon (M3); minimal & lightweight |
-| Virtualization | **UTM** | Apple Virtualization framework, fast ARM-native |
+| Virtualization | **Multipass** | open-source, fully CLI (multipass launch/exec), Apple Silicon native |
 | CIS audit | **Lynis (open-source) + bash script** | keeps $0 |
 | Policies | **3** (required tag / allowed regions / AMA ext audit) | minimal set, all free resource-level policies |
-| VM spec | 2 vCPU / 2GB / 20GB | 2 VMs total 4GB → ample on 18GB M3 |
+| VM spec | 2 vCPU / 2GB / 8GB | 2 VMs total 4GB RAM; 8GB disk minimized for limited host storage |
 | Presentation | **Static site (Astro) on Cloudflare Pages** | $0, custom domain via existing Cloudflare DNS, no Azure creds exposed |
 | Domain | **azure-arc-hybrid.techcloudup.com** | subdomain of techcloudup.com (DNS on Cloudflare) |
