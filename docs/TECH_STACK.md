@@ -11,12 +11,14 @@ Technology stack for the Azure Arc Hybrid Governance Lab. Everything is chosen t
 | Patch management | Azure Update Manager | Free |
 | Observability | Azure Monitor / Log Analytics (DCR) | Free (5GB/mo) |
 | IaC | Terraform + `azurerm` provider | Free |
-| Config management | Ansible + `azure.azcollection` | Free |
-| Virtualization | Multipass (CLI, Apple Silicon) | Free |
+| Config management | Ansible + `ansible-lockdown` | Free |
+| Virtualization | Multipass VM (CLI, Apple Silicon) | Free |
 | Guest OS | Ubuntu 22.04 LTS (arm64) | Free |
 | Security audit | Lynis | Free |
 | Presentation | Astro + Tailwind CSS (static) | Free |
 | Hosting | Cloudflare Pages (custom domain) | Free |
+| Networking | Tailscale (mesh VPN) | Free |
+| Cloud compute | Azure VM (B1ls) | ~$2/month |
 | CI/CD | GitHub Actions (OIDC) | Free (public repo) |
 | VCS | Git / GitHub | Free |
 
@@ -40,8 +42,7 @@ Technology stack for the Azure Arc Hybrid Governance Lab. Everything is chosen t
 
 ## Configuration Management
 
-- **Ansible** — VM bootstrap + Arc onboarding + CIS hardening
-  - `azure.azcollection` — Azure collection (Arc interaction, service principal auth)
+- **Ansible** — VM bootstrap + CIS hardening (enforcement)
   - `ansible-lockdown` CIS roles — enforce CIS baselines (e.g., `UBUNTU22-CIS`)
 
 ## Virtualization & OS
@@ -60,6 +61,11 @@ Technology stack for the Azure Arc Hybrid Governance Lab. Everything is chosen t
 - **Tailwind CSS** — styling
 - **Cloudflare Pages** — static hosting + custom domain (`azure-arc-hybrid.techcloudup.com`)
 - **CI snapshot pipeline** — scheduled GitHub Actions runs `az graph` / `az policy` queries (OIDC) → commits snapshot JSON → triggers build
+
+## Networking
+
+- **Tailscale** — WireGuard-based mesh VPN (free personal tier)
+- **Azure VM** (B1ls) — cloud-side node for hybrid connectivity (~$2/month, deallocate when idle)
 
 ## CI/CD & Version Control
 

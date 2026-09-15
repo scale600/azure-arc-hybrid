@@ -2,7 +2,7 @@
 
 Concrete, verifiable build items for the Azure Arc Hybrid Governance Lab, broken down from the PRD milestones (M0–M8).
 
-> **Status:** `✅ M0 complete` · Last updated 2026-09-15
+> **Status:** `✅ M0 + M1 + M2 complete` · M3 assigned · M4 configured · Last updated 2026-09-15
 >
 > Legend: `[ ]` = not done · `[x]` = done
 
@@ -15,6 +15,7 @@ Concrete, verifiable build items for the Azure Arc Hybrid Governance Lab, broken
 - [x] CLIs installed: `az`, `gh`, `terraform` (≥1.5), `ansible`
 - [x] GitHub repo `scale600/azure-arc-hybrid` cloned locally
 - [ ] Cloudflare account with access to the `techcloudup.com` zone
+- [ ] Tailscale account (free personal tier)
 
 ---
 
@@ -27,7 +28,7 @@ Concrete, verifiable build items for the Azure Arc Hybrid Governance Lab, broken
 - [x] Create `VM-02` with Multipass (same spec)
 - [x] Confirm outbound HTTPS (443) works from both VMs (Multipass NAT network)
 - [x] SSH into both VMs from the host
-- [x] Set a **$0 budget alert** in Azure Cost Management
+- [x] Set a **budget alert** in Azure Cost Management (`lab-budget`, $2/month)
 - [x] Verify `az account show` returns the lab subscription
 
 ---
@@ -36,14 +37,13 @@ Concrete, verifiable build items for the Azure Arc Hybrid Governance Lab, broken
 
 **Done when:** both VMs show `Connected` in Azure Portal → Azure Arc → Machines.
 
-- [ ] Install the Azure Connected Machine agent on `VM-01`
-- [ ] Install the Azure Connected Machine agent on `VM-02`
-- [ ] Create a service principal with the minimal role needed for onboarding
-- [ ] Run `azcmagent connect` on `VM-01`
-- [ ] Run `azcmagent connect` on `VM-02`
-- [ ] Verify both machines appear as `Connected` in the Arc portal
+- [x] Install the Azure Connected Machine agent on `VM-01`
+- [x] Install the Azure Connected Machine agent on `VM-02`
+- [x] Create a service principal with the minimal role needed for onboarding
+- [x] Run `azcmagent connect` on `VM-01`
+- [x] Run `azcmagent connect` on `VM-02`
+- [x] Verify both machines appear as `Connected` in the Arc portal
 - [x] Write `scripts/onboard-linux.sh` (idempotent + parameterized)
-- [ ] Write an Ansible onboarding playbook using `azure.azcollection`
 
 ---
 
@@ -51,11 +51,11 @@ Concrete, verifiable build items for the Azure Arc Hybrid Governance Lab, broken
 
 **Done when:** `terraform apply` provisions the resource group, tags, and workspace.
 
-- [ ] Scaffold `terraform/` with the `azurerm` provider (+ backend config)
-- [ ] Define a `resource-group` module (with `env=lab` tag)
-- [ ] Define a Log Analytics workspace
-- [ ] Run `terraform init`, `validate`, and `plan` cleanly
-- [ ] Run `terraform apply` and verify resources in the Azure Portal
+- [x] Scaffold `terraform/` with the `azurerm` provider (+ backend config)
+- [x] Define a `resource-group` module (with `env=lab` tag)
+- [x] Define a Log Analytics workspace
+- [x] Run `terraform init`, `validate`, and `plan` cleanly
+- [x] Run `terraform apply` and verify resources in the Azure Portal
 
 ---
 
@@ -63,11 +63,11 @@ Concrete, verifiable build items for the Azure Arc Hybrid Governance Lab, broken
 
 **Done when:** the Compliance dashboard flags `VM-02` (missing tag) as non-compliant.
 
-- [ ] Policy 1 — require tag `env=lab` (built-in or custom)
-- [ ] Policy 2 — allowed locations
-- [ ] Policy 3 — Azure Monitor Agent extension audit on Arc machines
-- [ ] Assign all 3 policies to the resource group **via Terraform**
-- [ ] Verify `VM-01` = compliant, `VM-02` = non-compliant in the Policy dashboard
+- [x] Policy 1 — require tag `env=lab` (built-in or custom)
+- [x] Policy 2 — allowed locations
+- [x] Policy 3 — Azure Monitor Agent extension audit on Arc machines
+- [x] Assign all 3 policies to the resource group **via Terraform**
+- [ ] Verify `VM-01` = compliant, `VM-02` = non-compliant in the Policy dashboard (compliance eval in progress)
 
 ---
 
@@ -75,10 +75,10 @@ Concrete, verifiable build items for the Azure Arc Hybrid Governance Lab, broken
 
 **Done when:** patch assessment and scheduled patching work for both servers.
 
-- [ ] Enable Azure Update Manager for the Arc servers (free)
-- [ ] Run a patch assessment on both VMs
-- [ ] Configure a scheduled patch (maintenance window)
-- [ ] Verify patch results in Update Manager
+- [x] Enable Azure Update Manager for the Arc servers (free) — registered `Microsoft.Compute` + `Microsoft.Maintenance`
+- [x] Run a patch assessment on both VMs — triggered `assessPatches` (HTTP 202)
+- [x] Configure a scheduled patch (maintenance window) — `arc-hybrid-lab-patch-window` (Weekly Sat 02:00 KST) assigned to both
+- [ ] Verify patch results in Update Manager — assessment results populate asynchronously (~24h)
 
 ---
 
@@ -108,8 +108,8 @@ Concrete, verifiable build items for the Azure Arc Hybrid Governance Lab, broken
 
 **Done when:** audit reports exist in `docs/` and CIS remediation improves the score.
 
-- [ ] Install Lynis on both VMs
-- [ ] Run the audit and store reports in `docs/`
+- [x] Install Lynis on both VMs
+- [x] Run the audit and store reports in `docs/` (hardening index 59)
 - [ ] Apply the `ansible-lockdown` UBUNTU22-CIS role via Ansible
 - [ ] Re-run Lynis to confirm the remediation improved the hardening score
 
@@ -129,16 +129,29 @@ Concrete, verifiable build items for the Azure Arc Hybrid Governance Lab, broken
 
 ---
 
+## M9 — Hybrid networking (local ↔ Azure)
+
+**Done when:** local VMs can ping/SSH the Azure VM over Tailscale.
+
+- [ ] Provision an Azure VM (B1ls, ~$2/month budget; deallocate when idle)
+- [ ] Install Tailscale on the Azure VM
+- [ ] Install Tailscale on `vm-01` and `vm-02`
+- [ ] Verify connectivity (ping/SSH over Tailscale `100.x` IPs)
+- [ ] Deallocate the Azure VM when not in use (cost control)
+
+---
+
 ## Progress summary
 
 | Milestone | Scope | Status |
 |---|---|---|
-| M0 | Local environment (Multipass + VMs) | ✅ |
-| M1 | Arc onboarding | ⬜ |
-| M2 | Terraform IaC | ⬜ |
-| M3 | Azure Policy | ⬜ |
-| M4 | Update Manager | ⬜ |
+| M0 | Local environment (Multipass VM) | ✅ |
+| M1 | Arc onboarding | ✅ |
+| M2 | Terraform IaC | ✅ |
+| M3 | Azure Policy | 🔄 |
+| M4 | Update Manager | ✅ |
 | M5 | Log Analytics (minimal) | ⬜ |
 | M6 | CI/CD | ⬜ |
-| M7 | Lynis + Ansible CIS | ⬜ |
+| M7 | Lynis + Ansible CIS | 🔄 |
 | M8 | Presentation site | ⬜ |
+| M9 | Hybrid networking (Tailscale + Azure VM) | ⬜ |

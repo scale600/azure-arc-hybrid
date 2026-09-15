@@ -15,6 +15,8 @@ Onboard 2 local VMs (simulating on-premises servers) to Azure Arc, and combine T
 
 **Presentation:** the final deliverable is a static presentation site at [azure-arc-hybrid.techcloudup.com](https://azure-arc-hybrid.techcloudup.com) hosted on Cloudflare Pages, with CI-generated compliance/cost snapshots.
 
+**Hybrid networking:** local VMs connect to an Azure VM over a Tailscale mesh VPN (free), demonstrating hybrid cloud connectivity. The Azure VM adds up to $2/month (deallocate when idle).
+
 ---
 
 ## 2. note.md Review — Required Corrections
@@ -46,6 +48,7 @@ Onboard 2 local VMs (simulating on-premises servers) to Azure Arc, and combine T
 7. Terraform CI/CD with GitHub Actions (public repo → free)
 8. Generate OS security audit reports with Lynis (open-source), replacing Machine Configuration
 9. Publish a static presentation site at azure-arc-hybrid.techcloudup.com (Cloudflare Pages) with CI-refreshed compliance/cost snapshots
+10. Connect local VMs to an Azure VM via Tailscale mesh VPN (hybrid networking, ≤$2/month)
 
 ### Out of Scope
 - Machine Configuration (Guest Configuration) OS-level policies — **paid ($6/server/month), excluded**
@@ -75,7 +78,7 @@ Onboard 2 local VMs (simulating on-premises servers) to Azure Arc, and combine T
 
 ```
 ┌─ Local Host (macOS / Apple Silicon M3 Pro) ─────────────┐
-│  Multipass (Canonical CLI VM manager)                        │
+│  Multipass VM (Canonical CLI manager)                        │
 │   ├─ VM-01  Ubuntu 22.04 LTS (arm64)  2vCPU/2GB/8GB     │
 │   └─ VM-02  Ubuntu 22.04 LTS (arm64)  2vCPU/2GB/8GB     │
 │        │  each VM: Azure Connected Machine Agent          │
@@ -106,6 +109,7 @@ Audit (inside VM, free) — Lynis:
 - **Terraform** = Azure resources (RG, tags, policies, workspace) IaC management
 - **Onboarding script** = runs `azcmagent connect` inside the VM
 - **Lynis** = OS security audit (free), runs locally, independent of Azure Policy
+- **Ansible** = CIS hardening enforcement (ansible-lockdown roles), M7
 - **GitHub Actions** = automates Terraform `plan/apply` (OIDC auth, no secrets)
 
 > 💡 **Demo point:** configure VM-01 as compliant (tags + AMA installed) and VM-02 as intentionally non-compliant (missing tag), to show the "compliant vs non-compliant" contrast in the Azure Policy Compliance dashboard.
@@ -133,12 +137,16 @@ GitHub Actions (scheduled)            Cloudflare Pages
 | ~~Machine Configuration~~ | ~~$6/server/month~~ | **not used** (excluded) |
 | ~~Defender / Sentinel~~ | ~~paid~~ | **not used** (excluded) |
 | OS | **Free** | Ubuntu 22.04 LTS (permanently free) |
-| Virtualization | **Free** | Multipass (open-source) |
+| Virtualization | **Free** | Multipass VM (open-source) |
 | CIS audit | **Free** | Lynis (open-source) |
 | GitHub Actions | **Free** | public repo |
 | Cloudflare Pages | **Free** | static hosting + custom domain |
+| Tailscale | **Free** | mesh VPN (personal tier) |
+| Azure VM (B1ls) | **~$2/month** | cloud-side node; deallocate when idle |
 
 > ⚠️ **Prerequisite for $0:** unrestricted heartbeat/perf-counter ingestion into Log Analytics can exceed 5GB, so the DCR must minimize collected data (only some Syslog errors + security events).
+>
+> 💰 **The only non-$0 item is the optional Azure VM** (~$2/month, B1ls) for hybrid networking. Everything else is free; the VM is deallocated when not in use.
 
 ---
 
@@ -155,6 +163,7 @@ GitHub Actions (scheduled)            Cloudflare Pages
 | **M6** | GitHub Actions terraform-ci (OIDC) | `.github/workflows/terraform-ci.yml` | Free |
 | **M7** | Lynis audit + documentation | `scripts/cis-audit/`, `docs/` | Free |
 | **M8** | Static presentation site (Astro) + CI snapshots + Cloudflare Pages deploy | `site/`, `.github/workflows/snapshot.yml` | Free |
+| **M9** | Hybrid networking: Azure VM (B1ls) + Tailscale mesh VPN | `cloud-vm`, Tailscale | ~$2/month |
 
 ---
 
@@ -170,6 +179,7 @@ azure-arc-hybrid-lab/
 │   ├── variables.tf
 │   └── terraform.tfvars.example
 ├── scripts/
+│   ├── setup-vms.sh              # M0: install Multipass + create VMs
 │   ├── onboard-linux.sh          # Arc onboarding (shared by 2 VMs)
 │   └── cis-audit/
 │       └── audit.sh              # Lynis run + report collection
@@ -177,6 +187,7 @@ azure-arc-hybrid-lab/
 ├── docs/
 │   ├── PRD.md
 │   ├── TECH_STACK.md
+│   ├── CHECKLIST.md
 │   └── ARCHITECTURE.md
 ├── .env                          # Azure connection info (gitignored)
 ├── .github/workflows/
@@ -211,9 +222,10 @@ A personal, hands-on project to explore hybrid governance with Azure Arc: simula
 | Item | Decision | Rationale |
 |---|---|---|
 | VM config | **Ubuntu 22.04 LTS × 2 (All-Linux)** | Windows Server x86 can't run on Apple Silicon (M3); minimal & lightweight |
-| Virtualization | **Multipass** | open-source, fully CLI (multipass launch/exec), Apple Silicon native |
+| Virtualization | **Multipass VM** | open-source, fully CLI (multipass launch/exec), Apple Silicon native |
 | CIS audit | **Lynis (open-source) + bash script** | keeps $0 |
 | Policies | **3** (required tag / allowed regions / AMA ext audit) | minimal set, all free resource-level policies |
 | VM spec | 2 vCPU / 2GB / 8GB | 2 VMs total 4GB RAM; 8GB disk minimized for limited host storage |
 | Presentation | **Static site (Astro) on Cloudflare Pages** | $0, custom domain via existing Cloudflare DNS, no Azure creds exposed |
 | Domain | **azure-arc-hybrid.techcloudup.com** | subdomain of techcloudup.com (DNS on Cloudflare) |
+| Hybrid networking | **Tailscale (free) + Azure VM (B1ls)** | mesh VPN for local↔Azure connectivity; VM ≤$2/month, deallocate when idle |

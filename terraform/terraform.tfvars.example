@@ -1,0 +1,8 @@
+# Copy to terraform.tfvars and adjust values (terraform.tfvars is gitignored).
+resource_group_name = "arc-hybrid-lab"
+location            = "koreacentral"
+workspace_name      = "arc-hybrid-lab-ws"
+
+tags = {
+  env = "lab"
+}
