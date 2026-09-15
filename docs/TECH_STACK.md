@@ -1,0 +1,72 @@
+# Tech Stack
+
+Technology stack for the Azure Arc Hybrid Governance Lab. Everything is chosen to keep the running cost at **$0/month**.
+
+## Summary
+
+| Category | Technology | Cost |
+|---|---|---|
+| Cloud platform | Azure Arc (control plane) | Free |
+| Governance | Azure Policy (resource-level) | Free |
+| Patch management | Azure Update Manager | Free |
+| Observability | Azure Monitor / Log Analytics (DCR) | Free (5GB/mo) |
+| IaC | Terraform + `azurerm` provider | Free |
+| Config management | Ansible + `azure.azcollection` | Free |
+| Virtualization | UTM (Apple Virtualization framework) | Free |
+| Guest OS | Ubuntu 22.04 LTS (arm64) | Free |
+| Security audit | Lynis | Free |
+| CI/CD | GitHub Actions (OIDC) | Free (public repo) |
+| VCS | Git / GitHub | Free |
+
+## Cloud Platform (Azure)
+
+- **Azure Arc** — hybrid onboarding & control plane (inventory, RBAC, tagging)
+  - Azure Connected Machine agent (`azcmagent`)
+- **Azure Policy** — resource-level governance (3 policies: required tag / allowed regions / AMA extension)
+- **Azure Update Manager** — patch assessment + scheduled patching
+- **Azure Monitor / Log Analytics** — minimal log collection
+  - Azure Monitor Agent (AMA)
+  - Data Collection Rules (DCR) — scoped to stay under 5GB/month
+
+> **Deliberately excluded (paid):** Machine Configuration (Guest Configuration, $6/server/month), Microsoft Defender for Servers, Microsoft Sentinel.
+
+## Infrastructure as Code
+
+- **Terraform** (`>= 1.5`)
+- **`azurerm` provider** (HashiCorp)
+- **Terraform modules** — `resource-group`, `policy`
+
+## Configuration Management
+
+- **Ansible** — VM bootstrap + Arc onboarding + CIS hardening
+  - `azure.azcollection` — Azure collection (Arc interaction, service principal auth)
+  - `ansible-lockdown` CIS roles — enforce CIS baselines (e.g., `UBUNTU22-CIS`)
+
+## Virtualization & OS
+
+- **UTM** — hypervisor using the Apple Virtualization framework (fast ARM-native)
+- **Ubuntu 22.04 LTS (arm64)** — guest OS on 2 VMs
+
+## Scripting & Automation
+
+- **Bash** — lightweight glue + audit orchestration
+- **Lynis** — open-source security auditing (detect; pairs with Ansible CIS roles to remediate)
+
+## CI/CD & Version Control
+
+- **Git** / **GitHub** (public repo)
+- **GitHub Actions** — Terraform CI (`plan`/`apply`)
+- **OIDC (OpenID Connect)** / workload identity federation — passwordless Terraform auth
+
+## CLI & Tooling
+
+- **Azure CLI** (`az`) — login, resource management, onboarding
+- **GitHub CLI** (`gh`) — repo management
+
+## Security & Compliance
+
+- **Azure Policy** — compliance dashboard
+- **Azure RBAC** — service principal + least-privilege roles
+- **Lynis** — OS-level CIS-style audit report (detect)
+- **Ansible CIS roles** — apply/remediate CIS baselines (enforce)
+- **Secrets management** — `.env` (gitignored) + GitHub Actions Secrets
