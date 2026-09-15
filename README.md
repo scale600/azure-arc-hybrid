@@ -69,14 +69,14 @@ Local Host (Apple Silicon M3 Pro)                         Azure
 | M3 | Azure Policy | Assign 3 policies (tag / region / AMA) | 🔄 assigned |
 | M4 | Update Manager | Patch assessment + scheduled patching | ✅ |
 | M5 | Log Analytics (minimal) | Install AMA + scoped DCR | ✅ |
-| M6 | CI/CD | GitHub Actions terraform-ci (OIDC) | ⬜ |
+| M6 | CI/CD | GitHub Actions terraform-ci (OIDC) | ✅ |
 | M7 | Security audit | Lynis + Ansible CIS hardening | 🔄 audit done |
 | M8 | Presentation site | Astro site on Cloudflare Pages | ⬜ |
 | M9 | Hybrid networking | Tailscale + Azure VM (B1ls) | ⏸️ capacity |
 
 ## Current status
 
-**M0 ✅ · M1 ✅ · M2 ✅ · M3 ✅ · M4 ✅ · M5 ✅ · Tailscale mesh ✅**
+**M0 ✅ · M1 ✅ · M2 ✅ · M3 ✅ · M4 ✅ · M5 ✅ · M6 ✅ · Tailscale mesh ✅**
 
 ```
 Name    State    IPv4 (local)    IPv4 (Tailscale)   Image
@@ -167,10 +167,12 @@ azure-arc-hybrid/
 │   ├── PRD.md                 # requirements + cost verification
 │   ├── CHECKLIST.md           # itemized build checklist
 │   └── TECH_STACK.md          # technology choices
+├── .github/workflows/
+│   └── terraform-ci.yml       # M6: Terraform CI (OIDC, no secrets)
 └── .env                       # Azure connection info (gitignored)
 ```
 
-Planned (not yet scaffolded): `scripts/cis-audit/` (M7), `.github/workflows/` (M6/M8), `site/` (M8).
+Planned (not yet scaffolded): `scripts/cis-audit/` (M7), `site/` (M8).
 
 ## Documentation
 

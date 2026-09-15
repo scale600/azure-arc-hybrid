@@ -2,7 +2,7 @@
 
 Concrete, verifiable build items for the Azure Arc Hybrid Governance Lab, broken down from the PRD milestones (M0–M8).
 
-> **Status:** `✅ M0 + M1 + M2 + M4 + M5 complete` · M3 assigned · M7 audit done · Last updated 2026-09-15
+> **Status:** `✅ M0 + M1 + M2 + M4 + M5 + M6 complete` · M3 assigned · M7 audit done · Last updated 2026-09-15
 >
 > Legend: `[ ]` = not done · `[x]` = done
 
@@ -98,9 +98,10 @@ Concrete, verifiable build items for the Azure Arc Hybrid Governance Lab, broken
 
 **Done when:** `terraform plan` runs in GitHub Actions on push/PR.
 
-- [ ] Set up GitHub Actions **OIDC** (federated credential to Azure — no secrets)
-- [ ] Write `.github/workflows/terraform-ci.yml` (plan on PR, apply on merge)
-- [ ] Verify CI runs `terraform plan` successfully
+- [x] Set up GitHub Actions **OIDC** (federated credential to Azure — no secrets; SP `azure-arc-hybrid-github-actions`)
+- [x] Write `.github/workflows/terraform-ci.yml` (plan on PR, apply on main)
+- [x] Configure remote backend (Azure Storage `archylabtfstate`) + migrate state
+- [x] Verify CI runs `terraform plan` + `apply` successfully (OIDC, no secrets)
 
 ---
 
@@ -151,7 +152,7 @@ Concrete, verifiable build items for the Azure Arc Hybrid Governance Lab, broken
 | M3 | Azure Policy | 🔄 |
 | M4 | Update Manager | ✅ |
 | M5 | Log Analytics (minimal) | ✅ |
-| M6 | CI/CD | ⬜ |
+| M6 | CI/CD | ✅ |
 | M7 | Lynis + Ansible CIS | 🔄 |
 | M8 | Presentation site | ⬜ |
 | M9 | Hybrid networking (Tailscale + Azure VM) | ⬜ |
