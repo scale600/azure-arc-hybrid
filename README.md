@@ -80,13 +80,15 @@ Local Host (Apple Silicon M3 Pro)                         Azure
 
 ```
 Name    State    IPv4 (local)    IPv4 (Tailscale)   Image
-vm-01   Running  192.168.252.4   100.122.67.121     Ubuntu 22.04 LTS
-vm-02   Running  192.168.252.5   100.111.237.108    Ubuntu 22.04 LTS
+vm-01   Running  <local-ip>      <tailscale-ip>     Ubuntu 22.04 LTS
+vm-02   Running  <local-ip>      <tailscale-ip>     Ubuntu 22.04 LTS
 ```
 
 VM specs (each): 2 vCPU / 2 GB RAM / 8 GB disk — actual usage ~1.9 GiB disk, ~170 MiB RAM.
 
 Tailscale mesh verified: `ping` vm-01 ↔ vm-02 (0% packet loss, direct connection).
+
+> 🔒 IP addresses are stored in `.env` (gitignored) and shown here as placeholders.
 
 | Component | Status |
 |---|---|
