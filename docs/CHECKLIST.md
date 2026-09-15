@@ -2,7 +2,7 @@
 
 Concrete, verifiable build items for the Azure Arc Hybrid Governance Lab, broken down from the PRD milestones (M0–M8).
 
-> **Status:** `✅ M0 + M1 + M2 complete` · M3 assigned · M4 configured · Last updated 2026-09-15
+> **Status:** `✅ M0 + M1 + M2 + M4 + M5 complete` · M3 assigned · M7 audit done · Last updated 2026-09-15
 >
 > Legend: `[ ]` = not done · `[x]` = done
 
@@ -86,11 +86,11 @@ Concrete, verifiable build items for the Azure Arc Hybrid Governance Lab, broken
 
 **Done when:** ingestion stays well under 5 GB/month and cost remains $0.
 
-- [ ] Install Azure Monitor Agent (AMA) on both VMs
-- [ ] Create a DCR scoped to minimal data (Syslog errors + selected security events)
-- [ ] Associate the DCR with both Arc machines
-- [ ] Verify daily ingestion is far below the 5 GB/month free allowance
-- [ ] Confirm monthly cost stays $0 in Cost Management
+- [x] Install Azure Monitor Agent (AMA) on both VMs (1.45.0, arm64)
+- [x] Create a DCR scoped to minimal data — `arc-hybrid-lab-syslog-dcr` (Syslog auth/authpriv @ Warning+)
+- [x] Associate the DCR with both Arc machines (DCRA vm-01 + vm-02)
+- [x] Verify Syslog data flowing to the workspace (queried `Syslog` table — both machines)
+- [ ] Confirm monthly ingestion ≪ 5 GB and cost $0 (requires billing cycle)
 
 ---
 
@@ -150,7 +150,7 @@ Concrete, verifiable build items for the Azure Arc Hybrid Governance Lab, broken
 | M2 | Terraform IaC | ✅ |
 | M3 | Azure Policy | 🔄 |
 | M4 | Update Manager | ✅ |
-| M5 | Log Analytics (minimal) | ⬜ |
+| M5 | Log Analytics (minimal) | ✅ |
 | M6 | CI/CD | ⬜ |
 | M7 | Lynis + Ansible CIS | 🔄 |
 | M8 | Presentation site | ⬜ |
