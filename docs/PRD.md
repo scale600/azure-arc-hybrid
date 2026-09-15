@@ -13,6 +13,8 @@ Onboard 2 local VMs (simulating on-premises servers) to Azure Arc, and combine T
 
 **Platform constraint:** the host is Apple Silicon (M3 Pro), so x86_64-only Windows Server cannot run natively → use **All-Linux (Ubuntu 22.04 LTS × 2)**.
 
+**Presentation:** the final deliverable is a static presentation site at [azure-arc-hybrid.techcloudup.com](https://azure-arc-hybrid.techcloudup.com) hosted on Cloudflare Pages, with CI-generated compliance/cost snapshots.
+
 ---
 
 ## 2. note.md Review — Required Corrections
@@ -26,7 +28,7 @@ Onboard 2 local VMs (simulating on-premises servers) to Azure Arc, and combine T
 | 5 | "Log Analytics 5GB/month free" | ✅ Correct (5GB/month per billing account, 31-day retention) | Keep — but data collection must be minimized |
 | 6 | "Local VM free (Windows Server 2022)" | ❌ **Platform mismatch.** Windows Server (x86) cannot run natively on M3 Pro (ARM); emulation is impractical | Replace with **All-Linux (Ubuntu ×2)** |
 | 7 | "5 CIS Benchmark-based policies" | ⚠️ OS-level CIS checks require Machine Configuration ($6) | Use **Lynis (open-source) + bash script** for free audit reports |
-| 8 | Server count mismatch (impl "2" vs story "3") | ❌ Inconsistent | **Standardize on 2** (Ubuntu 22.04 × 2); fix interview story to "2" |
+| 8 | Server count mismatch (impl "2" vs story "3") | ❌ Inconsistent | **Standardize on 2** (Ubuntu 22.04 × 2) |
 | 9 | "3 on-premises servers" | ⚠️ Actually local VMs | Phrase honestly as "on-premises simulation (2 local VMs)" |
 | 10 | Terraform role ambiguous | Terraform manages Azure resources (IaC). Onboarding runs `azcmagent` inside the VM. | Clarify boundary (§5) |
 
@@ -43,6 +45,7 @@ Onboard 2 local VMs (simulating on-premises servers) to Azure Arc, and combine T
 6. Minimal Log Analytics collection (within 5GB)
 7. Terraform CI/CD with GitHub Actions (public repo → free)
 8. Generate OS security audit reports with Lynis (open-source), replacing Machine Configuration
+9. Publish a static presentation site at azure-arc-hybrid.techcloudup.com (Cloudflare Pages) with CI-refreshed compliance/cost snapshots
 
 ### Out of Scope
 - Machine Configuration (Guest Configuration) OS-level policies — **paid ($6/server/month), excluded**
@@ -64,6 +67,7 @@ Onboard 2 local VMs (simulating on-premises servers) to Azure Arc, and combine T
 - [ ] Log Analytics monthly ingestion stays below 5GB
 - [ ] GitHub Actions runs `terraform plan/apply` via OIDC
 - [ ] Monthly Azure cost = $0 (verified in cost analysis)
+- [ ] Presentation site live at azure-arc-hybrid.techcloudup.com with auto-refreshed snapshots
 
 ---
 
@@ -106,6 +110,16 @@ Audit (inside VM, free) — Lynis:
 
 > 💡 **Demo point:** configure VM-01 as compliant (tags + AMA installed) and VM-02 as intentionally non-compliant (missing tag), to show the "compliant vs non-compliant" contrast in the Azure Policy Compliance dashboard.
 
+**Presentation layer (public, static):**
+
+```
+GitHub Actions (scheduled)            Cloudflare Pages
+  az graph / policy queries  ──▶  snapshot JSON  ──▶  Astro build  ──▶  azure-arc-hybrid.techcloudup.com
+  (OIDC, no secrets)           (committed to repo)   (custom domain via Cloudflare DNS)
+```
+
+- Static site (Astro) renders compliance / patch / cost snapshots produced by a scheduled CI job — no Azure credentials are ever exposed to the public site.
+
 ---
 
 ## 6. Cost Verification — $0 basis (as of 2026.09)
@@ -122,6 +136,7 @@ Audit (inside VM, free) — Lynis:
 | Virtualization | **Free** | UTM (open-source, free) |
 | CIS audit | **Free** | Lynis (open-source) |
 | GitHub Actions | **Free** | public repo |
+| Cloudflare Pages | **Free** | static hosting + custom domain |
 
 > ⚠️ **Prerequisite for $0:** unrestricted heartbeat/perf-counter ingestion into Log Analytics can exceed 5GB, so the DCR must minimize collected data (only some Syslog errors + security events).
 
@@ -139,6 +154,7 @@ Audit (inside VM, free) — Lynis:
 | **M5** | Minimal Log Analytics collection (AMA + DCR) | DCR definition | Free (≤5GB) |
 | **M6** | GitHub Actions terraform-ci (OIDC) | `.github/workflows/terraform-ci.yml` | Free |
 | **M7** | Lynis audit + documentation | `scripts/cis-audit/`, `docs/` | Free |
+| **M8** | Static presentation site (Astro) + CI snapshots + Cloudflare Pages deploy | `site/`, `.github/workflows/snapshot.yml` | Free |
 
 ---
 
@@ -157,12 +173,15 @@ azure-arc-hybrid-lab/
 │   ├── onboard-linux.sh          # Arc onboarding (shared by 2 VMs)
 │   └── cis-audit/
 │       └── audit.sh              # Lynis run + report collection
+├── site/                         # static presentation site (Astro)
 ├── docs/
 │   ├── PRD.md
+│   ├── TECH_STACK.md
 │   └── ARCHITECTURE.md
 ├── .env                          # Azure connection info (gitignored)
 ├── .github/workflows/
-│   └── terraform-ci.yml
+│   ├── terraform-ci.yml
+│   └── snapshot.yml              # az queries → snapshot JSON
 └── README.md
 ```
 
@@ -181,9 +200,9 @@ azure-arc-hybrid-lab/
 
 ---
 
-## 10. Interview Story (revised)
+## 10. Project Narrative
 
-> "I simulated 2 on-premises servers (Ubuntu 22.04) in a local environment, onboarded them to Azure Arc, and automated the **tagging, auditing, and patching process as code** with Terraform + Azure Policy + Update Manager. By leveraging the fact that the Azure Arc control plane and Policy evaluation are free, I completed a hybrid governance PoC at **$0/month**. The key decision was replacing the paid Machine Configuration with open-source Lynis for OS-level CIS checks to eliminate cost."
+A personal, hands-on project to explore hybrid governance with Azure Arc: simulate 2 on-premises servers (Ubuntu 22.04) locally, onboard them to Azure Arc, and automate **tagging, auditing, and patching as code** with Terraform + Azure Policy + Update Manager. Because the Arc control plane and Policy evaluation are free, the whole setup runs at **$0/month**, with a public presentation dashboard at [azure-arc-hybrid.techcloudup.com](https://azure-arc-hybrid.techcloudup.com). The notable design choice was replacing the paid Machine Configuration with open-source Lynis for OS-level CIS checks to keep the cost at zero.
 
 ---
 
@@ -196,3 +215,5 @@ azure-arc-hybrid-lab/
 | CIS audit | **Lynis (open-source) + bash script** | keeps $0 |
 | Policies | **3** (required tag / allowed regions / AMA ext audit) | minimal set, all free resource-level policies |
 | VM spec | 2 vCPU / 2GB / 20GB | 2 VMs total 4GB → ample on 18GB M3 |
+| Presentation | **Static site (Astro) on Cloudflare Pages** | $0, custom domain via existing Cloudflare DNS, no Azure creds exposed |
+| Domain | **azure-arc-hybrid.techcloudup.com** | subdomain of techcloudup.com (DNS on Cloudflare) |

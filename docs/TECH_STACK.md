@@ -15,6 +15,8 @@ Technology stack for the Azure Arc Hybrid Governance Lab. Everything is chosen t
 | Virtualization | UTM (Apple Virtualization framework) | Free |
 | Guest OS | Ubuntu 22.04 LTS (arm64) | Free |
 | Security audit | Lynis | Free |
+| Presentation | Astro + Tailwind CSS (static) | Free |
+| Hosting | Cloudflare Pages (custom domain) | Free |
 | CI/CD | GitHub Actions (OIDC) | Free (public repo) |
 | VCS | Git / GitHub | Free |
 
@@ -51,6 +53,13 @@ Technology stack for the Azure Arc Hybrid Governance Lab. Everything is chosen t
 
 - **Bash** — lightweight glue + audit orchestration
 - **Lynis** — open-source security auditing (detect; pairs with Ansible CIS roles to remediate)
+
+## Presentation & Hosting
+
+- **Astro** — static site framework (zero-JS by default, fast)
+- **Tailwind CSS** — styling
+- **Cloudflare Pages** — static hosting + custom domain (`azure-arc-hybrid.techcloudup.com`)
+- **CI snapshot pipeline** — scheduled GitHub Actions runs `az graph` / `az policy` queries (OIDC) → commits snapshot JSON → triggers build
 
 ## CI/CD & Version Control
 
