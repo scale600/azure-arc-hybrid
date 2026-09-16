@@ -72,7 +72,7 @@ Local Host (Apple Silicon M3 Pro)                         Azure
 | M6 | CI/CD | GitHub Actions terraform-ci (OIDC) | ✅ |
 | M7 | Security audit | Lynis + Ansible CIS hardening | ✅ |
 | M8 | Presentation site | Astro site on Azure Static Web Apps | ✅ |
-| M9 | Hybrid networking | Tailscale + Azure VM (D2als_v6) | 🔄 provisioned, Tailscale join pending |
+| M9 | Hybrid networking | Tailscale + Azure VM (D2als_v6) | ✅ |
 
 ## Current status
 
@@ -99,7 +99,7 @@ Tailscale mesh verified: `ping` vm-01 ↔ vm-02 (0% packet loss, direct connecti
 | Azure Update Manager | ✅ assessment + weekly schedule (Sat 02:00 KST) |
 | Lynis security audit | ✅ hardening index 71 (both VMs, post CIS hardening) |
 | Presentation site (M8) | 🚀 live at `azure-arc-hybrid.techcloudup.com` (Azure SWA, auto-refresh CI) |
-| Azure VM (`cloud-vm`) | ✅ provisioned (`Standard_D2als_v6`, koreacentral) · Tailscale installed, join pending auth key |
+| Azure VM (`cloud-vm`) | ✅ provisioned (`Standard_D2als_v6`, koreacentral) · Tailscale joined (`100.119.185.44`) · ping/SSH verified over `100.x` |
 
 ## Governance policies (M3)
 

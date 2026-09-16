@@ -139,16 +139,16 @@ Concrete, verifiable build items for the Azure Arc Hybrid Governance Lab, broken
 - [x] Provision an Azure VM (`Standard_D2als_v6`, koreacentral — B1ls capacity/zero-quota blocked; deallocate when idle)
 - [x] Install Tailscale on the Azure VM (v1.102.4 via cloud-init)
 - [x] Install Tailscale on `vm-01` and `vm-02`
-- [ ] Verify connectivity (ping/SSH over Tailscale `100.x` IPs) — blocked on Tailscale auth key
+- [x] Verify connectivity (ping/SSH over Tailscale `100.x` IPs)
 - [x] Deallocate the Azure VM when not in use (cost control)
 
-> ⏳ **Remaining (blocked on user):** `cloud-vm` needs to join tailnet `richneo.co`. No auth key exists in repo/`.env`/GitHub secrets.
+> ✅ **M9 complete.** `cloud-vm` joined tailnet `richneo.co` via `tailscale up --authkey` (key stored in GitHub secret `TAILSCALE_AUTH_KEY` + `.env`).
 >
-> **Resume steps:**
-> 1. (User) Generate a reusable auth key: https://login.tailscale.com/admin/settings/keys → `richneo.co` → Generate (Reusable).
-> 2. Start VM + join: `az vm start -g arc-hybrid-lab -n cloud-vm` → SSH → `sudo tailscale up --authkey=<key>`.
-> 3. Verify: `multipass exec vm-01 -- sudo tailscale ping cloud-vm` + SSH over `100.x`.
-> 4. Deallocate VM.
+> **Verified:** `tailscale ping` + SSH over `100.x` between all nodes:
+> - `vm-01` `100.122.67.121` ↔ `cloud-vm` `100.119.185.44` (SSH OK)
+> - `vm-02` `100.111.237.108` ↔ `cloud-vm` `100.119.185.44` (SSH OK)
+>
+> **Note (firewall):** M7 CIS hardening enables UFW with deny-outgoing by default, which blocked outbound SSH on `vm-01`/`vm-02`. Fixed with `sudo ufw allow out on tailscale0 to any port 22` (SSH over the Tailscale interface only; internet egress stays denied).
 
 ---
 
@@ -165,4 +165,4 @@ Concrete, verifiable build items for the Azure Arc Hybrid Governance Lab, broken
 | M6 | CI/CD | ✅ |
 | M7 | Lynis + Ansible CIS | ✅ |
 | M8 | Presentation site | ✅ |
-| M9 | Hybrid networking (Tailscale + Azure VM) | 🔄 provisioned, Tailscale join pending |
+| M9 | Hybrid networking (Tailscale + Azure VM) | ✅ |
