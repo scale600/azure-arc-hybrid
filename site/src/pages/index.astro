@@ -29,7 +29,7 @@ const milestones = [
   { id: 'M6', name: 'CI/CD', desc: 'GitHub Actions (OIDC)', status: 'done' },
   { id: 'M7', name: 'Security audit', desc: 'Lynis + Ansible CIS', status: 'done' },
   { id: 'M8', name: 'Presentation site', desc: 'this site (Azure Static Web Apps)', status: 'active' },
-  { id: 'M9', name: 'Hybrid networking', desc: 'Tailscale + Azure VM', status: 'todo' },
+  { id: 'M9', name: 'Hybrid networking', desc: 'Tailscale + Azure VM (D2als_v6)', status: 'done' },
 ];
 
 const statusStyles = {
@@ -106,7 +106,7 @@ const statusStyles = {
 
       <div>
         <h2 class="text-xl font-semibold tracking-tight">Milestones</h2>
-        <p class="mt-1 text-sm text-muted">M0–M7 complete · M8 this site · M9 next.</p>
+        <p class="mt-1 text-sm text-muted">M0–M9 complete.</p>
         <div class="mt-4 space-y-2">
           {milestones.map((ms) => (
             <div class="flex items-center gap-3 rounded-lg border border-border bg-surface px-4 py-2.5">
