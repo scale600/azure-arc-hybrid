@@ -1,0 +1,39 @@
+name: Start VM
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  start:
+    name: Start cloud-vm
+    runs-on: ubuntu-latest
+    env:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+    steps:
+      - name: Fetch OIDC token
+        run: |
+          TOKEN=$(curl -sSL -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=api://AzureADTokenExchange" | jq -r .value)
+          echo "ARM_OIDC_TOKEN=$TOKEN" >> "$GITHUB_ENV"
+
+      - name: Az login (OIDC)
+        run: |
+          az login --service-principal \
+            -u "$AZURE_CLIENT_ID" \
+            -t "$AZURE_TENANT_ID" \
+            --federated-token "$ARM_OIDC_TOKEN"
+          az account set --subscription "$AZURE_SUBSCRIPTION_ID"
+
+      - name: Start cloud-vm + show public IP
+        run: |
+          RG="arc-hybrid-lab"
+          az vm start -g "$RG" -n "cloud-vm"
+          IP=$(az network public-ip show -g "$RG" -n "cloud-vm-pip" --query ipAddress -o tsv)
+          echo "PUBLIC_IP=$IP" >> "$GITHUB_ENV"
+          echo "cloud-vm public IP: $IP"
