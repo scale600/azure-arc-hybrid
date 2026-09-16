@@ -1,0 +1,102 @@
+---
+import Layout from '../layouts/Layout.astro';
+import snapshot from '../data/snapshot.json';
+
+const policies = snapshot.policies;
+const machines = snapshot.machines;
+
+const totalCompliant = policies.reduce((a, p) => a + p.compliant, 0);
+const totalNonCompliant = policies.reduce((a, p) => a + p.nonCompliant, 0);
+const total = totalCompliant + totalNonCompliant;
+const pct = total ? Math.round((totalCompliant / total) * 100) : 0;
+
+const tagged = machines.find((m) => m.tags && Object.keys(m.tags).length > 0);
+const untagged = machines.find((m) => !m.tags || Object.keys(m.tags).length === 0);
+---
+
+<Layout
+  title="Compliance — Arc Hybrid Lab"
+  description="Azure Policy compliance for the 3 lab policies, with a compliant vs non-compliant demo."
+>
+  <section class="mx-auto max-w-6xl px-6 py-12">
+    <h1 class="text-3xl font-bold tracking-tight sm:text-4xl">Compliance</h1>
+    <p class="mt-3 max-w-2xl text-muted">
+      Three resource-level Azure Policies govern the <code class="mono text-xs">arc-hybrid-lab</code> resource
+      group. The dashboard below is rendered from a CI-generated snapshot.
+    </p>
+
+    <div class="mt-8 grid gap-4 sm:grid-cols-3">
+      <div class="rounded-xl border border-border bg-surface p-5">
+        <p class="text-sm text-muted">Compliant</p>
+        <p class="mt-2 text-3xl font-semibold text-success">{totalCompliant}</p>
+      </div>
+      <div class="rounded-xl border border-border bg-surface p-5">
+        <p class="text-sm text-muted">Non-compliant</p>
+        <p class="mt-2 text-3xl font-semibold text-warning">{totalNonCompliant}</p>
+      </div>
+      <div class="rounded-xl border border-border bg-surface p-5">
+        <p class="text-sm text-muted">Compliance rate</p>
+        <p class="mt-2 text-3xl font-semibold text-accent">{pct}%</p>
+      </div>
+    </div>
+
+    <h2 class="mt-12 text-xl font-semibold tracking-tight">Policies</h2>
+    <div class="mt-4 space-y-4">
+      {policies.map((p) => (
+        <div class="rounded-xl border border-border bg-surface p-5">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p class="font-medium">{p.displayName}</p>
+              <p class="mono mt-0.5 text-xs text-muted">{p.name}</p>
+            </div>
+            <span
+              class={`rounded-full px-2.5 py-1 text-xs font-medium ${
+                p.effect === 'deny' ? 'bg-danger/15 text-danger' : 'bg-accent/15 text-accent'
+              }`}
+            >
+              {p.effect}
+            </span>
+          </div>
+          <div class="mt-4 flex items-center gap-6">
+            <div>
+              <p class="text-2xl font-semibold text-success">{p.compliant}</p>
+              <p class="text-xs text-muted">compliant</p>
+            </div>
+            <div>
+              <p class="text-2xl font-semibold text-warning">{p.nonCompliant}</p>
+              <p class="text-xs text-muted">non-compliant</p>
+            </div>
+            <div class="flex-1">
+              <div class="h-2 overflow-hidden rounded-full bg-raised">
+                <div
+                  class="h-full rounded-full bg-success"
+                  style={`width: ${p.compliant + p.nonCompliant ? Math.round((p.compliant / (p.compliant + p.nonCompliant)) * 100) : 0}%`}
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <h2 class="mt-12 text-xl font-semibold tracking-tight">Demo — compliant vs non-compliant</h2>
+    <p class="mt-1 text-sm text-muted">
+      The <code class="mono text-xs">require-env-tag</code> deny policy surfaces one machine as
+      intentionally non-compliant.
+    </p>
+    <div class="mt-4 grid gap-4 sm:grid-cols-2">
+      <div class="rounded-xl border border-success/30 bg-surface p-5">
+        <p class="font-medium text-success">{tagged?.name ?? 'vm-01'} · compliant</p>
+        <p class="mono mt-1 text-xs text-muted">
+          tags: {tagged && Object.keys(tagged.tags).length > 0
+            ? Object.entries(tagged.tags).map(([k, v]) => `${k}=${v}`).join(' ')
+            : 'env=lab'}
+        </p>
+      </div>
+      <div class="rounded-xl border border-warning/30 bg-surface p-5">
+        <p class="font-medium text-warning">{untagged?.name ?? 'vm-02'} · non-compliant</p>
+        <p class="mono mt-1 text-xs text-muted">tags: (none)</p>
+      </div>
+    </div>
+  </section>
+</Layout>

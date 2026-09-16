@@ -1,0 +1,55 @@
+{
+  "generatedAt": "2026-09-16T15:33:19Z",
+  "machines": [
+    {
+      "name": "vm-01",
+      "status": "Connected",
+      "location": "koreacentral",
+      "os": "Ubuntu 22.04 LTS",
+      "kernel": "5.15.0-191-generic",
+      "tags": {
+        "env": "lab"
+      }
+    },
+    {
+      "name": "vm-02",
+      "status": "Connected",
+      "location": "koreacentral",
+      "os": "Ubuntu 22.04 LTS",
+      "kernel": "5.15.0-191-generic",
+      "tags": {}
+    }
+  ],
+  "policies": [
+    {
+      "name": "require-env-tag",
+      "compliant": 5,
+      "nonCompliant": 3,
+      "displayName": "Require env tag on resources",
+      "effect": "deny"
+    },
+    {
+      "name": "allowed-locations",
+      "compliant": 8,
+      "nonCompliant": 0,
+      "displayName": "Allowed locations",
+      "effect": "deny"
+    },
+    {
+      "name": "ama-audit-linux-arc",
+      "compliant": 2,
+      "nonCompliant": 0,
+      "displayName": "Linux Arc machines should have AMA installed",
+      "effect": "audit"
+    }
+  ],
+  "cost": {
+    "currency": "USD",
+    "monthlyTarget": 0,
+    "budgetAlertUSD": 2
+  },
+  "logAnalytics": {
+    "workspace": "arc-hybrid-lab-ws",
+    "freeTierGB": 5
+  }
+}

@@ -17,4 +17,7 @@ resource "azurerm_log_analytics_workspace" "this" {
 module "policy" {
   source            = "./modules/policy"
   resource_group_id = module.resource_group.id
+  # The presentation site (M8) uses Azure Static Web Apps, which is not
+  # available in koreacentral — allow eastasia for it.
+  allowed_locations = ["koreacentral", "eastasia"]
 }

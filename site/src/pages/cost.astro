@@ -1,0 +1,92 @@
+---
+import Layout from '../layouts/Layout.astro';
+import snapshot from '../data/snapshot.json';
+
+const rows = [
+  { service: 'Azure Arc control plane', cost: 'Free', note: 'inventory, RBAC, tagging, policy evaluation' },
+  { service: 'Azure Policy (resource-level)', cost: 'Free', note: 'definitions, assignments, evaluation' },
+  { service: 'Azure Update Manager', cost: 'Free', note: 'patch assessment + scheduled patching' },
+  { service: 'Log Analytics', cost: `Free ≤${snapshot.logAnalytics.freeTierGB} GB/month`, note: `workspace ${snapshot.logAnalytics.workspace}` },
+  { service: 'OS security audit (Lynis)', cost: 'Free', note: 'open-source, replaces paid Machine Configuration' },
+  { service: 'CIS hardening (Ansible)', cost: 'Free', note: 'ansible-lockdown role' },
+  { service: 'CI/CD (GitHub Actions)', cost: 'Free', note: 'public repo, OIDC auth' },
+  { service: 'Hosting (Cloudflare Pages)', cost: 'Free', note: 'static site + custom domain' },
+  { service: 'Networking (Tailscale)', cost: 'Free', note: 'mesh VPN (personal tier)' },
+  { service: 'Machine Configuration', cost: 'Not used', note: '$6/server/month — excluded to keep $0', excluded: true },
+];
+
+const optional = [
+  { service: 'Azure VM (B1ls)', cost: '~$2/month', note: 'hybrid networking (M9), deallocated when idle' },
+];
+---
+
+<Layout
+  title="Cost — Arc Hybrid Lab"
+  description="How the entire hybrid governance stack runs at $0/month."
+>
+  <section class="mx-auto max-w-6xl px-6 py-12">
+    <h1 class="text-3xl font-bold tracking-tight sm:text-4xl">Cost</h1>
+    <p class="mt-3 max-w-2xl text-muted">
+      The entire governance stack runs at <span class="text-success">$0/month</span> by using only free
+      Azure services — and by deliberately avoiding the one paid feature that would otherwise be
+      tempting.
+    </p>
+
+    <div class="mt-8 grid gap-4 sm:grid-cols-3">
+      <div class="rounded-xl border border-success/30 bg-surface p-5">
+        <p class="text-sm text-muted">Monthly target</p>
+        <p class="mt-2 text-3xl font-semibold text-success">${snapshot.cost.monthlyTarget}</p>
+      </div>
+      <div class="rounded-xl border border-border bg-surface p-5">
+        <p class="text-sm text-muted">Budget alert</p>
+        <p class="mt-2 text-3xl font-semibold">${snapshot.cost.budgetAlertUSD}</p>
+        <p class="mt-1 text-xs text-muted">Azure Cost Management</p>
+      </div>
+      <div class="rounded-xl border border-border bg-surface p-5">
+        <p class="text-sm text-muted">Log Analytics allowance</p>
+        <p class="mt-2 text-3xl font-semibold">{snapshot.logAnalytics.freeTierGB} GB</p>
+        <p class="mt-1 text-xs text-muted">free per month</p>
+      </div>
+    </div>
+
+    <h2 class="mt-12 text-xl font-semibold tracking-tight">Service breakdown</h2>
+    <div class="mt-4 overflow-hidden rounded-xl border border-border">
+      <table class="w-full text-sm">
+        <thead class="bg-surface text-left text-muted">
+          <tr>
+            <th class="px-4 py-3 font-medium">Service</th>
+            <th class="px-4 py-3 font-medium">Cost</th>
+            <th class="px-4 py-3 font-medium">Note</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-border">
+          {rows.map((r) => (
+            <tr class={r.excluded ? 'opacity-70' : ''}>
+              <td class="px-4 py-3 font-medium">
+                {r.service}
+                {r.excluded && <span class="ml-2 rounded-full bg-danger/15 px-2 py-0.5 text-xs text-danger">excluded</span>}
+              </td>
+              <td class={`mono px-4 py-3 ${r.excluded ? 'text-danger' : 'text-success'}`}>{r.cost}</td>
+              <td class="px-4 py-3 text-muted">{r.note}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <h2 class="mt-12 text-xl font-semibold tracking-tight">The one optional cost</h2>
+    <div class="mt-4 overflow-hidden rounded-xl border border-border">
+      <table class="w-full text-sm">
+        <tbody class="divide-y divide-border">
+          {optional.map((r) => (
+            <tr>
+              <td class="px-4 py-3 font-medium">{r.service}</td>
+              <td class="mono px-4 py-3 text-warning">{r.cost}</td>
+              <td class="px-4 py-3 text-muted">{r.note}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</Layout>

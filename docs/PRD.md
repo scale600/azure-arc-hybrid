@@ -13,7 +13,7 @@ Onboard 2 local VMs (simulating on-premises servers) to Azure Arc, and combine T
 
 **Platform constraint:** the host is Apple Silicon (M3 Pro), so x86_64-only Windows Server cannot run natively → use **All-Linux (Ubuntu 22.04 LTS × 2)**.
 
-**Presentation:** the final deliverable is a static presentation site at [azure-arc-hybrid.techcloudup.com](https://azure-arc-hybrid.techcloudup.com) hosted on Cloudflare Pages, with CI-generated compliance/cost snapshots.
+**Presentation:** the final deliverable is a static presentation site at [azure-arc-hybrid.techcloudup.com](https://azure-arc-hybrid.techcloudup.com) hosted on Azure Static Web Apps (DNS via Cloudflare), with CI-generated compliance/cost snapshots.
 
 **Hybrid networking:** local VMs connect to an Azure VM over a Tailscale mesh VPN (free), demonstrating hybrid cloud connectivity. The Azure VM adds up to $2/month (deallocate when idle).
 
@@ -47,7 +47,7 @@ Onboard 2 local VMs (simulating on-premises servers) to Azure Arc, and combine T
 6. Minimal Log Analytics collection (within 5GB)
 7. Terraform CI/CD with GitHub Actions (public repo → free)
 8. Generate OS security audit reports with Lynis (open-source), replacing Machine Configuration
-9. Publish a static presentation site at azure-arc-hybrid.techcloudup.com (Cloudflare Pages) with CI-refreshed compliance/cost snapshots
+9. Publish a static presentation site at azure-arc-hybrid.techcloudup.com (Azure Static Web Apps) with CI-refreshed compliance/cost snapshots
 10. Connect local VMs to an Azure VM via Tailscale mesh VPN (hybrid networking, ≤$2/month)
 
 ### Out of Scope
@@ -117,7 +117,7 @@ Audit (inside VM, free) — Lynis:
 **Presentation layer (public, static):**
 
 ```
-GitHub Actions (scheduled)            Cloudflare Pages
+GitHub Actions (scheduled)            Azure Static Web Apps
   az graph / policy queries  ──▶  snapshot JSON  ──▶  Astro build  ──▶  azure-arc-hybrid.techcloudup.com
   (OIDC, no secrets)           (committed to repo)   (custom domain via Cloudflare DNS)
 ```
@@ -140,7 +140,7 @@ GitHub Actions (scheduled)            Cloudflare Pages
 | Virtualization | **Free** | Multipass VM (open-source) |
 | CIS audit | **Free** | Lynis (open-source) |
 | GitHub Actions | **Free** | public repo |
-| Cloudflare Pages | **Free** | static hosting + custom domain |
+| Azure Static Web Apps | **Free** | static hosting + custom domain |
 | Tailscale | **Free** | mesh VPN (personal tier) |
 | Azure VM (B1ls) | **~$2/month** | cloud-side node; deallocate when idle |
 
@@ -162,7 +162,7 @@ GitHub Actions (scheduled)            Cloudflare Pages
 | **M5** | Minimal Log Analytics collection (AMA + DCR) | DCR definition | Free (≤5GB) |
 | **M6** | GitHub Actions terraform-ci (OIDC) | `.github/workflows/terraform-ci.yml` | Free |
 | **M7** | Lynis audit + documentation | `scripts/cis-audit/`, `docs/` | Free |
-| **M8** | Static presentation site (Astro) + CI snapshots + Cloudflare Pages deploy | `site/`, `.github/workflows/snapshot.yml` | Free |
+| **M8** | Static presentation site (Astro) + CI snapshots + Azure SWA deploy | `site/`, `.github/workflows/snapshot.yml` | Free |
 | **M9** | Hybrid networking: Azure VM (B1ls) + Tailscale mesh VPN | `cloud-vm`, Tailscale | ~$2/month |
 
 ---
@@ -226,6 +226,6 @@ A personal, hands-on project to explore hybrid governance with Azure Arc: simula
 | CIS audit | **Lynis (open-source) + bash script** | keeps $0 |
 | Policies | **3** (required tag / allowed regions / AMA ext audit) | minimal set, all free resource-level policies |
 | VM spec | 2 vCPU / 2GB / 8GB | 2 VMs total 4GB RAM; 8GB disk minimized for limited host storage |
-| Presentation | **Static site (Astro) on Cloudflare Pages** | $0, custom domain via existing Cloudflare DNS, no Azure creds exposed |
+| Presentation | **Static site (Astro) on Azure Static Web Apps** | $0, custom domain via existing Cloudflare DNS, no Azure creds exposed |
 | Domain | **azure-arc-hybrid.techcloudup.com** | subdomain of techcloudup.com (DNS on Cloudflare) |
 | Hybrid networking | **Tailscale (free) + Azure VM (B1ls)** | mesh VPN for local↔Azure connectivity; VM ≤$2/month, deallocate when idle |

@@ -16,7 +16,7 @@ Technology stack for the Azure Arc Hybrid Governance Lab. Everything is chosen t
 | Guest OS | Ubuntu 22.04 LTS (arm64) | Free |
 | Security audit | Lynis | Free |
 | Presentation | Astro + Tailwind CSS (static) | Free |
-| Hosting | Cloudflare Pages (custom domain) | Free |
+| Hosting | Azure Static Web Apps (custom domain) + Cloudflare DNS | Free |
 | Networking | Tailscale (mesh VPN) | Free |
 | Cloud compute | Azure VM (B1ls) | ~$2/month |
 | CI/CD | GitHub Actions (OIDC) | Free (public repo) |
@@ -59,7 +59,7 @@ Technology stack for the Azure Arc Hybrid Governance Lab. Everything is chosen t
 
 - **Astro** — static site framework (zero-JS by default, fast)
 - **Tailwind CSS** — styling
-- **Cloudflare Pages** — static hosting + custom domain (`azure-arc-hybrid.techcloudup.com`)
+- **Azure Static Web Apps** — static hosting + custom domain (`azure-arc-hybrid.techcloudup.com`), DNS via Cloudflare
 - **CI snapshot pipeline** — scheduled GitHub Actions runs `az graph` / `az policy` queries (OIDC) → commits snapshot JSON → triggers build
 
 ## Networking

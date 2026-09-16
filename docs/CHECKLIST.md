@@ -122,12 +122,12 @@ Concrete, verifiable build items for the Azure Arc Hybrid Governance Lab, broken
 
 **Done when:** the site is live at `azure-arc-hybrid.techcloudup.com` with auto-refreshed snapshots.
 
-- [ ] Scaffold an Astro site in `site/` (Tailwind CSS)
-- [ ] Build pages: overview, architecture, compliance, cost
-- [ ] Write `.github/workflows/snapshot.yml` (scheduled `az graph` / `az policy` queries → JSON)
-- [ ] Render snapshot JSON in the site
-- [ ] Create a Cloudflare Pages project linked to the GitHub repo
-- [ ] Attach the custom domain `azure-arc-hybrid.techcloudup.com` (auto DNS via Cloudflare)
+- [x] Scaffold an Astro site in `site/` (Tailwind CSS)
+- [x] Build pages: overview, architecture, compliance, cost
+- [x] Write `.github/workflows/snapshot.yml` (scheduled `az graph` / `az policy` queries → JSON)
+- [x] Render snapshot JSON in the site
+- [x] Create an Azure Static Web App (Free) + deploy via `.github/workflows/deploy-site.yml`
+- [ ] Attach the custom domain `azure-arc-hybrid.techcloudup.com` (CNAME → SWA, DNS via Cloudflare)
 - [ ] Verify the site is live and snapshots refresh on schedule
 
 ---
@@ -156,5 +156,5 @@ Concrete, verifiable build items for the Azure Arc Hybrid Governance Lab, broken
 | M5 | Log Analytics (minimal) | ✅ |
 | M6 | CI/CD | ✅ |
 | M7 | Lynis + Ansible CIS | ✅ |
-| M8 | Presentation site | ⬜ |
+| M8 | Presentation site | 🔄 |
 | M9 | Hybrid networking (Tailscale + Azure VM) | ⬜ |

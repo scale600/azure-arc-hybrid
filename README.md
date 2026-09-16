@@ -71,7 +71,7 @@ Local Host (Apple Silicon M3 Pro)                         Azure
 | M5 | Log Analytics (minimal) | Install AMA + scoped DCR | ✅ |
 | M6 | CI/CD | GitHub Actions terraform-ci (OIDC) | ✅ |
 | M7 | Security audit | Lynis + Ansible CIS hardening | ✅ |
-| M8 | Presentation site | Astro site on Cloudflare Pages | ⬜ |
+| M8 | Presentation site | Astro site on Azure Static Web Apps | 🔄 |
 | M9 | Hybrid networking | Tailscale + Azure VM (B1ls) | ⏸️ capacity |
 
 ## Current status
@@ -162,20 +162,24 @@ azure-arc-hybrid/
 │       └── policy/            # 3 policy assignments
 ├── scripts/
 │   ├── setup-vms.sh           # M0: install Multipass + create VMs
-│   └── onboard-linux.sh       # M1: Arc onboarding (idempotent)
+│   ├── onboard-linux.sh       # M1: Arc onboarding (idempotent)
+│   └── snapshot.sh            # M8: az graph/policy → snapshot JSON
 ├── ansible/
 │   ├── hosts.ini              # M7: inventory (vm-01, vm-02)
 │   └── harden.yml             # M7: ansible-lockdown CIS playbook
+├── site/                      # M8: Astro presentation site
+│   ├── src/pages/             # overview / architecture / compliance / cost
+│   └── src/data/snapshot.json # CI-refreshed snapshot
 ├── docs/
 │   ├── PRD.md                 # requirements + cost verification
 │   ├── CHECKLIST.md           # itemized build checklist
 │   └── TECH_STACK.md          # technology choices
 ├── .github/workflows/
-│   └── terraform-ci.yml       # M6: Terraform CI (OIDC, no secrets)
+│   ├── terraform-ci.yml       # M6: Terraform CI (OIDC, no secrets)
+│   ├── snapshot.yml           # M8: scheduled snapshot refresh
+│   └── deploy-site.yml        # M8: build + deploy to Azure SWA
 └── .env                       # Azure connection info (gitignored)
 ```
-
-Planned (not yet scaffolded): `site/` (M8).
 
 ## Documentation
 

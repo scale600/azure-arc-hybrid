@@ -1,0 +1,127 @@
+---
+import Layout from '../layouts/Layout.astro';
+import snapshot from '../data/snapshot.json';
+
+const machines = snapshot.machines;
+const connected = machines.filter((m) => m.status === 'Connected').length;
+const totalCompliant = snapshot.policies.reduce((a, p) => a + p.compliant, 0);
+const totalNonCompliant = snapshot.policies.reduce((a, p) => a + p.nonCompliant, 0);
+
+const refreshed = new Date(snapshot.generatedAt).toLocaleString('en-US', {
+  dateStyle: 'medium',
+  timeStyle: 'short',
+});
+
+const stats = [
+  { label: 'Arc machines', value: String(connected), sub: 'Connected', tone: 'text-accent' },
+  { label: 'Azure Policies', value: String(snapshot.policies.length), sub: 'assigned', tone: 'text-accent' },
+  { label: 'Monthly cost', value: '$0', sub: `$${snapshot.cost.budgetAlertUSD} budget alert`, tone: 'text-success' },
+  { label: 'Lynis index', value: '71', sub: 'hardening score', tone: 'text-success' },
+];
+
+const milestones = [
+  { id: 'M0', name: 'Local environment', desc: '2 × Ubuntu 22.04 arm64 (Multipass)', status: 'done' },
+  { id: 'M1', name: 'Arc onboarding', desc: 'azcmagent → Azure Arc', status: 'done' },
+  { id: 'M2', name: 'Terraform IaC', desc: 'RG + tags + workspace', status: 'done' },
+  { id: 'M3', name: 'Azure Policy', desc: '3 policies (tag / region / AMA)', status: 'done' },
+  { id: 'M4', name: 'Update Manager', desc: 'patch assessment + schedule', status: 'done' },
+  { id: 'M5', name: 'Log Analytics', desc: 'AMA + scoped DCR', status: 'done' },
+  { id: 'M6', name: 'CI/CD', desc: 'GitHub Actions (OIDC)', status: 'done' },
+  { id: 'M7', name: 'Security audit', desc: 'Lynis + Ansible CIS', status: 'done' },
+  { id: 'M8', name: 'Presentation site', desc: 'this site (Cloudflare Pages)', status: 'active' },
+  { id: 'M9', name: 'Hybrid networking', desc: 'Tailscale + Azure VM', status: 'todo' },
+];
+
+const statusStyles = {
+  done: 'bg-success/15 text-success',
+  active: 'bg-accent/15 text-accent',
+  todo: 'bg-muted/15 text-muted',
+};
+---
+
+<Layout title="Arc Hybrid Lab — Hybrid governance as code" description="A hands-on Azure Arc hybrid governance lab: patch, audit, tagging and RBAC as code, at $0/month.">
+  <section class="border-b border-border">
+    <div class="mx-auto max-w-6xl px-6 py-16 sm:py-20">
+      <p class="mono mb-4 text-sm text-accent">AZURE ARC · HYBRID GOVERNANCE</p>
+      <h1 class="max-w-3xl text-4xl font-bold tracking-tight sm:text-5xl">
+        Hybrid governance as code — at <span class="text-accent">$0/month</span>.
+      </h1>
+      <p class="mt-5 max-w-2xl text-lg text-muted">
+        Onboard 2 on-premises Ubuntu servers to Azure Arc, then layer on patching, compliance,
+        tagging and RBAC with free Azure services — every layer reproduced from infrastructure as code.
+      </p>
+      <p class="mono mt-6 text-xs text-muted">Last refreshed: {refreshed}</p>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-6 py-12">
+    <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      {stats.map((s) => (
+        <div class="rounded-xl border border-border bg-surface p-5">
+          <p class="text-sm text-muted">{s.label}</p>
+          <p class={`mt-2 text-3xl font-semibold tracking-tight ${s.tone}`}>{s.value}</p>
+          <p class="mt-1 text-xs text-muted">{s.sub}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-6 pb-16">
+    <div class="grid gap-8 lg:grid-cols-2">
+      <div>
+        <h2 class="text-xl font-semibold tracking-tight">Arc machines</h2>
+        <p class="mt-1 text-sm text-muted">Live inventory from the snapshot.</p>
+        <div class="mt-4 overflow-hidden rounded-xl border border-border">
+          <table class="w-full text-sm">
+            <thead class="bg-surface text-left text-muted">
+              <tr>
+                <th class="px-4 py-3 font-medium">Name</th>
+                <th class="px-4 py-3 font-medium">Status</th>
+                <th class="px-4 py-3 font-medium">OS</th>
+                <th class="px-4 py-3 font-medium">Tags</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-border">
+              {machines.map((m) => (
+                <tr>
+                  <td class="px-4 py-3 font-medium">{m.name}</td>
+                  <td class="px-4 py-3">
+                    <span class="inline-flex items-center gap-1.5 rounded-full bg-success/15 px-2 py-0.5 text-xs text-success">
+                      <span class="h-1.5 w-1.5 rounded-full bg-success"></span>
+                      {m.status}
+                    </span>
+                  </td>
+                  <td class="mono px-4 py-3 text-xs text-muted">{m.os}</td>
+                  <td class="mono px-4 py-3 text-xs">
+                    {m.tags && Object.keys(m.tags).length > 0
+                      ? Object.entries(m.tags).map(([k, v]) => `${k}=${v}`).join(' ')
+                      : '—'}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="text-xl font-semibold tracking-tight">Milestones</h2>
+        <p class="mt-1 text-sm text-muted">M0–M7 complete · M8 this site · M9 next.</p>
+        <div class="mt-4 space-y-2">
+          {milestones.map((ms) => (
+            <div class="flex items-center gap-3 rounded-lg border border-border bg-surface px-4 py-2.5">
+              <span class="mono text-xs text-muted">{ms.id}</span>
+              <div class="flex-1">
+                <p class="text-sm font-medium">{ms.name}</p>
+                <p class="text-xs text-muted">{ms.desc}</p>
+              </div>
+              <span class={`rounded-full px-2 py-0.5 text-xs ${statusStyles[ms.status]}`}>
+                {ms.status === 'done' ? 'done' : ms.status === 'active' ? 'in progress' : 'todo'}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

@@ -1,3 +1,6 @@
 .env
 .codegraph
 note.md
+# tool artifacts
+.omo/
+.playwright-mcp/
