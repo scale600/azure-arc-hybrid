@@ -36,3 +36,10 @@ jobs:
             echo "=== $loc (B1/B2 with restrictions) ==="
             az vm list-skus -l "$loc" --query "[?contains(name,'Standard_B1')||contains(name,'Standard_B2')].{name:name, restricted:restrictions[0].reasonCode}" -o table
           done
+
+      - name: List compute usage (quota) for VM families
+        run: |
+          for loc in eastasia koreacentral; do
+            echo "=== $loc compute quota/usage (families with any limit) ==="
+            az vm list-usage -l "$loc" --query "[?limit>0].{name:name.value, current:currentValue, limit:limit}" -o table
+          done
