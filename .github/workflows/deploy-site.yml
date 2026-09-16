@@ -1,7 +1,7 @@
 name: Deploy Site
 
-# Build the Astro site and deploy to Azure Static Web Apps on push to main
-# (when anything under site/ changes, including the CI-refreshed snapshot.json).
+# Deploys on push to site/** and on Snapshot workflow completion.
+# workflow_run is required because a GITHUB_TOKEN push does not trigger other workflows.
 
 on:
   push:
@@ -9,6 +9,9 @@ on:
     paths:
       - 'site/**'
   workflow_dispatch: {}
+  workflow_run:
+    workflows: ["Snapshot"]
+    types: [completed]
 
 permissions:
   contents: read
@@ -16,10 +19,13 @@ permissions:
 jobs:
   deploy:
     name: Deploy
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: refs/heads/main
 
       - name: Setup Node
         uses: actions/setup-node@v4
