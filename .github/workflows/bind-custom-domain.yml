@@ -1,0 +1,70 @@
+name: Bind Custom Domain
+
+# Register/bind the custom domain azure-arc-hybrid.techcloudup.com on the Static
+# Web App via OIDC (no secrets, same federated identity as terraform-ci). The
+# CNAME + TXT records must already exist in Cloudflare before running.
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  bind:
+    name: Bind custom domain
+    runs-on: ubuntu-latest
+    env:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Fetch OIDC token
+        run: |
+          TOKEN=$(curl -sSL -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=api://AzureADTokenExchange" | jq -r .value)
+          echo "ARM_OIDC_TOKEN=$TOKEN" >> "$GITHUB_ENV"
+
+      - name: Az login (OIDC)
+        run: |
+          az login --service-principal \
+            -u "$AZURE_CLIENT_ID" \
+            -t "$AZURE_TENANT_ID" \
+            --federated-token "$ARM_OIDC_TOKEN"
+          az account set --subscription "$AZURE_SUBSCRIPTION_ID"
+
+      - name: Bind custom domain
+        run: |
+          az staticwebapp hostname set \
+            --name arc-hybrid-lab-site \
+            --resource-group arc-hybrid-lab \
+            --hostname azure-arc-hybrid.techcloudup.com \
+            --no-wait
+          echo "Custom domain registered; validation runs in the background."
+
+      - name: Wait for validation (up to 10 min)
+        run: |
+          for i in $(seq 1 30); do
+            st=$(az staticwebapp hostname show \
+              --name arc-hybrid-lab-site \
+              --resource-group arc-hybrid-lab \
+              --hostname azure-arc-hybrid.techcloudup.com \
+              --query status -o tsv 2>/dev/null || echo "error")
+            echo "[$i] status=$st"
+            if [ "$st" = "Ready" ]; then echo "DOMAIN_READY"; exit 0; fi
+            if [ "$st" = "Failed" ]; then
+              echo "DOMAIN_FAILED:"
+              az staticwebapp hostname show \
+                --name arc-hybrid-lab-site \
+                --resource-group arc-hybrid-lab \
+                --hostname azure-arc-hybrid.techcloudup.com \
+                --query errorMessage -o tsv
+              exit 1
+            fi
+            sleep 20
+          done
+          echo "Still validating after 10 min (normal; SSL provisioning can take longer)."
