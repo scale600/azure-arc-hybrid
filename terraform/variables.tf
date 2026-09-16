@@ -33,7 +33,7 @@ variable "vm_name" {
 variable "vm_size" {
   description = "Azure VM size"
   type        = string
-  default     = "Standard_B2ats_v2"
+  default     = "Standard_D2as_v4"
 }
 
 variable "vm_location" {
