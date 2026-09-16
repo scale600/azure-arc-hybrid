@@ -26,7 +26,7 @@ A hands-on lab that simulates **2 on-premises servers** (Ubuntu 22.04 LTS VMs ru
 - **Policy as code** — enforce tagging, region, and agent state with Azure Policy, and show a compliant vs. non-compliant machine side by side.
 - **Centralized patching** — assess and schedule patches across hybrid servers with Azure Update Manager.
 - **Cost-aware logging** — collect only what's needed via a data collection rule (DCR) to stay under the 5 GB/month free allowance.
-- **Open-source security audit** — run Lynis CIS audits, replacing the paid Machine Configuration.
+- **Open-source security audit** — run Lynis CIS audits (replacing the paid Machine Configuration), then remediate with the Ansible `ansible-lockdown` CIS role (hardening index 59 → 71).
 - **Hybrid networking** — connect local VMs to an Azure VM over a Tailscale mesh VPN.
 
 ## Why $0 works
@@ -70,13 +70,13 @@ Local Host (Apple Silicon M3 Pro)                         Azure
 | M4 | Update Manager | Patch assessment + scheduled patching | ✅ |
 | M5 | Log Analytics (minimal) | Install AMA + scoped DCR | ✅ |
 | M6 | CI/CD | GitHub Actions terraform-ci (OIDC) | ✅ |
-| M7 | Security audit | Lynis + Ansible CIS hardening | 🔄 audit done |
+| M7 | Security audit | Lynis + Ansible CIS hardening | ✅ |
 | M8 | Presentation site | Astro site on Cloudflare Pages | ⬜ |
 | M9 | Hybrid networking | Tailscale + Azure VM (B1ls) | ⏸️ capacity |
 
 ## Current status
 
-**M0 ✅ · M1 ✅ · M2 ✅ · M3 ✅ · M4 ✅ · M5 ✅ · M6 ✅ · Tailscale mesh ✅**
+**M0 ✅ · M1 ✅ · M2 ✅ · M3 ✅ · M4 ✅ · M5 ✅ · M6 ✅ · M7 ✅ · Tailscale mesh ✅**
 
 ```
 Name    State    IPv4 (local)    IPv4 (Tailscale)   Image
@@ -97,7 +97,7 @@ Tailscale mesh verified: `ping` vm-01 ↔ vm-02 (0% packet loss, direct connecti
 | Log Analytics (minimal) | ✅ AMA on both VMs · syslog DCR → `arc-hybrid-lab-ws` (PerGB2018) |
 | Azure Policy | ✅ 3 assigned (tag / region / AMA) |
 | Azure Update Manager | ✅ assessment + weekly schedule (Sat 02:00 KST) |
-| Lynis security audit | ✅ hardening index 59 (both VMs) |
+| Lynis security audit | ✅ hardening index 71 (both VMs, post CIS hardening) |
 | Azure VM (`cloud-vm`) | ⏸️ not provisioned (B-series capacity) |
 
 ## Governance policies (M3)
@@ -163,6 +163,9 @@ azure-arc-hybrid/
 ├── scripts/
 │   ├── setup-vms.sh           # M0: install Multipass + create VMs
 │   └── onboard-linux.sh       # M1: Arc onboarding (idempotent)
+├── ansible/
+│   ├── hosts.ini              # M7: inventory (vm-01, vm-02)
+│   └── harden.yml             # M7: ansible-lockdown CIS playbook
 ├── docs/
 │   ├── PRD.md                 # requirements + cost verification
 │   ├── CHECKLIST.md           # itemized build checklist
@@ -172,7 +175,7 @@ azure-arc-hybrid/
 └── .env                       # Azure connection info (gitignored)
 ```
 
-Planned (not yet scaffolded): `scripts/cis-audit/` (M7), `site/` (M8).
+Planned (not yet scaffolded): `site/` (M8).
 
 ## Documentation
 

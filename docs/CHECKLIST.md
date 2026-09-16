@@ -2,7 +2,7 @@
 
 Concrete, verifiable build items for the Azure Arc Hybrid Governance Lab, broken down from the PRD milestones (M0–M8).
 
-> **Status:** `✅ M0 + M1 + M2 + M4 + M5 + M6 complete` · M3 assigned · M7 audit done · Last updated 2026-09-15
+> **Status:** `✅ M0 + M1 + M2 + M4 + M5 + M6 + M7 complete` · M3 assigned · Last updated 2026-09-16
 >
 > Legend: `[ ]` = not done · `[x]` = done
 
@@ -111,8 +111,10 @@ Concrete, verifiable build items for the Azure Arc Hybrid Governance Lab, broken
 
 - [x] Install Lynis on both VMs
 - [x] Run the audit and store reports in `docs/` (hardening index 59)
-- [ ] Apply the `ansible-lockdown` UBUNTU22-CIS role via Ansible
-- [ ] Re-run Lynis to confirm the remediation improved the hardening score
+- [x] Apply the `ansible-lockdown` UBUNTU22-CIS role via Ansible (Level 1 server, 35 changes per VM)
+- [x] Re-run Lynis to confirm the remediation improved the hardening score (59 → 71)
+
+> ℹ️ Disabled 2 password rules in `ansible/harden.yml` (`ubtu22cis_rule_5_2_4` sudo password, `ubtu22cis_rule_5_4_2_4` root password) — Multipass VMs use key-only auth, so the role's password prerequisite checks would otherwise fail. Arc + AMA agents verified still running after hardening.
 
 ---
 
@@ -153,6 +155,6 @@ Concrete, verifiable build items for the Azure Arc Hybrid Governance Lab, broken
 | M4 | Update Manager | ✅ |
 | M5 | Log Analytics (minimal) | ✅ |
 | M6 | CI/CD | ✅ |
-| M7 | Lynis + Ansible CIS | 🔄 |
+| M7 | Lynis + Ansible CIS | ✅ |
 | M8 | Presentation site | ⬜ |
 | M9 | Hybrid networking (Tailscale + Azure VM) | ⬜ |

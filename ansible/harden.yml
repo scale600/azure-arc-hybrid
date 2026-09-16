@@ -1,0 +1,17 @@
+---
+# Apply Ubuntu 22.04 CIS Level 1 (server) hardening via ansible-lockdown.
+# Run: ansible-playbook -i hosts.ini harden.yml --tags level1-server
+#
+# Tags (from ansible-lockdown.ubuntu22_cis):
+#   level1-server / level1-workstation / level2-server / level2-workstation
+- name: Harden Ubuntu 22.04 VMs to CIS Level 1
+  hosts: vms
+  become: true
+  roles:
+    - ansible-lockdown.ubuntu22_cis
+  vars:
+    ubtu22cis_level_2: false   # audit scope only; remediation is tag-driven
+    system_is_container: false
+    skip_reboot: true
+    ubtu22cis_rule_5_2_4: false    # sudo password — ubuntu is key-only (Multipass)
+    ubtu22cis_rule_5_4_2_4: false  # root password — Ubuntu keeps root locked
