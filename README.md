@@ -71,12 +71,12 @@ Local Host (Apple Silicon M3 Pro)                         Azure
 | M5 | Log Analytics (minimal) | Install AMA + scoped DCR | ✅ |
 | M6 | CI/CD | GitHub Actions terraform-ci (OIDC) | ✅ |
 | M7 | Security audit | Lynis + Ansible CIS hardening | ✅ |
-| M8 | Presentation site | Astro site on Azure Static Web Apps | 🔄 |
+| M8 | Presentation site | Astro site on Azure Static Web Apps | ✅ |
 | M9 | Hybrid networking | Tailscale + Azure VM (B1ls) | ⏸️ capacity |
 
 ## Current status
 
-**M0 ✅ · M1 ✅ · M2 ✅ · M3 ✅ · M4 ✅ · M5 ✅ · M6 ✅ · M7 ✅ · Tailscale mesh ✅**
+**M0 ✅ · M1 ✅ · M2 ✅ · M3 ✅ · M4 ✅ · M5 ✅ · M6 ✅ · M7 ✅ · M8 ✅ · Tailscale mesh ✅**
 
 ```
 Name    State    IPv4 (local)    IPv4 (Tailscale)   Image
@@ -98,7 +98,7 @@ Tailscale mesh verified: `ping` vm-01 ↔ vm-02 (0% packet loss, direct connecti
 | Azure Policy | ✅ 3 assigned (tag / region / AMA) |
 | Azure Update Manager | ✅ assessment + weekly schedule (Sat 02:00 KST) |
 | Lynis security audit | ✅ hardening index 71 (both VMs, post CIS hardening) |
-| Presentation site (M8) | 🚀 live at `jolly-sand-07ee31b00.4.azurestaticapps.net` (custom domain pending) |
+| Presentation site (M8) | 🚀 live at `azure-arc-hybrid.techcloudup.com` (Azure SWA, auto-refresh CI) |
 | Azure VM (`cloud-vm`) | ⏸️ not provisioned (B-series capacity) |
 
 ## Governance policies (M3)

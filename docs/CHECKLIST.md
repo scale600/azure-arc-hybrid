@@ -127,8 +127,8 @@ Concrete, verifiable build items for the Azure Arc Hybrid Governance Lab, broken
 - [x] Write `.github/workflows/snapshot.yml` (scheduled `az graph` / `az policy` queries → JSON)
 - [x] Render snapshot JSON in the site
 - [x] Create an Azure Static Web App (Free) + deploy via `.github/workflows/deploy-site.yml`
-- [ ] Attach the custom domain `azure-arc-hybrid.techcloudup.com` (CNAME → SWA, DNS via Cloudflare)
-- [ ] Verify the site is live and snapshots refresh on schedule
+- [x] Attach the custom domain `azure-arc-hybrid.techcloudup.com` (CNAME → SWA, DNS via Cloudflare)
+- [x] Verify the site is live and snapshots refresh on schedule
 
 ---
 
@@ -156,5 +156,5 @@ Concrete, verifiable build items for the Azure Arc Hybrid Governance Lab, broken
 | M5 | Log Analytics (minimal) | ✅ |
 | M6 | CI/CD | ✅ |
 | M7 | Lynis + Ansible CIS | ✅ |
-| M8 | Presentation site | 🔄 |
+| M8 | Presentation site | ✅ |
 | M9 | Hybrid networking (Tailscale + Azure VM) | ⬜ |
