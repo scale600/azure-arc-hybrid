@@ -11,6 +11,10 @@ resource "azurerm_subnet" "this" {
   resource_group_name  = var.resource_group_name
   virtual_network_name = azurerm_virtual_network.this.name
   address_prefixes     = ["10.0.1.0/24"]
+
+  lifecycle {
+    replace_triggered_by = [azurerm_virtual_network.this]
+  }
 }
 
 resource "azurerm_network_security_group" "this" {
