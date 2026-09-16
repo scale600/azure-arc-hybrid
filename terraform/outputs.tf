@@ -12,3 +12,13 @@ output "log_analytics_workspace_name" {
   description = "Log Analytics workspace name"
   value       = azurerm_log_analytics_workspace.this.name
 }
+
+output "vm_public_ip" {
+  description = "Public IP address of the hybrid-networking VM"
+  value       = module.vm.public_ip
+}
+
+output "vm_private_ip" {
+  description = "Private IP address of the hybrid-networking VM"
+  value       = module.vm.private_ip
+}

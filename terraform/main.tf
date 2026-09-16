@@ -21,3 +21,15 @@ module "policy" {
   # available in koreacentral — allow eastasia for it.
   allowed_locations = ["koreacentral", "eastasia"]
 }
+
+module "vm" {
+  source               = "./modules/vm"
+  resource_group_name  = module.resource_group.name
+  location             = module.resource_group.location
+  vm_name              = var.vm_name
+  vm_size              = var.vm_size
+  admin_ssh_public_key = var.admin_ssh_public_key
+  ssh_source_ip        = var.ssh_source_ip
+  tailscale_auth_key   = var.tailscale_auth_key
+  tags                 = var.tags
+}
