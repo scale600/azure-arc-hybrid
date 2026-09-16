@@ -33,7 +33,7 @@ variable "vm_name" {
 variable "vm_size" {
   description = "Azure VM size"
   type        = string
-  default     = "Standard_B1ls"
+  default     = "Standard_B1s"
 }
 
 variable "admin_ssh_public_key" {
