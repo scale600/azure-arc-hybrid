@@ -98,6 +98,7 @@ Tailscale mesh verified: `ping` vm-01 ↔ vm-02 (0% packet loss, direct connecti
 | Azure Policy | ✅ 3 assigned (tag / region / AMA) |
 | Azure Update Manager | ✅ assessment + weekly schedule (Sat 02:00 KST) |
 | Lynis security audit | ✅ hardening index 71 (both VMs, post CIS hardening) |
+| Presentation site (M8) | 🚀 live at `jolly-sand-07ee31b00.4.azurestaticapps.net` (custom domain pending) |
 | Azure VM (`cloud-vm`) | ⏸️ not provisioned (B-series capacity) |
 
 ## Governance policies (M3)
