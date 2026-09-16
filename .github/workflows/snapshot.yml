@@ -1,7 +1,7 @@
 name: Snapshot
 
 # Refresh site/src/data/snapshot.json from Azure (Arc inventory + policy compliance)
-# via OIDC (no secrets). The committed JSON drives the Cloudflare Pages build.
+# via OIDC (no secrets). The committed JSON drives the Azure Static Web Apps build.
 
 on:
   schedule:
