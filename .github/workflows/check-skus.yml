@@ -40,6 +40,6 @@ jobs:
       - name: List compute usage (quota) for VM families
         run: |
           for loc in eastasia koreacentral; do
-            echo "=== $loc compute quota/usage (families with any limit) ==="
-            az vm list-usage -l "$loc" --query "[?limit>0].{name:name.value, current:currentValue, limit:limit}" -o table
+            echo "=== $loc compute quota/usage ==="
+            az vm list-usage -l "$loc" --query "[].{name:name.value, current:currentValue, limit:limit}" -o table
           done
