@@ -33,13 +33,13 @@ variable "vm_name" {
 variable "vm_size" {
   description = "Azure VM size"
   type        = string
-  default     = "Standard_D2as_v4"
+  default     = "Standard_D2als_v6"
 }
 
 variable "vm_location" {
   description = "Azure region for the hybrid-networking VM (B-series capacity varies by region)"
   type        = string
-  default     = "eastasia"
+  default     = "koreacentral"
 }
 
 variable "admin_ssh_public_key" {
