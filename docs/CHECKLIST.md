@@ -140,7 +140,15 @@ Concrete, verifiable build items for the Azure Arc Hybrid Governance Lab, broken
 - [x] Install Tailscale on the Azure VM (v1.102.4 via cloud-init)
 - [x] Install Tailscale on `vm-01` and `vm-02`
 - [ ] Verify connectivity (ping/SSH over Tailscale `100.x` IPs) — blocked on Tailscale auth key
-- [ ] Deallocate the Azure VM when not in use (cost control)
+- [x] Deallocate the Azure VM when not in use (cost control)
+
+> ⏳ **Remaining (blocked on user):** `cloud-vm` needs to join tailnet `richneo.co`. No auth key exists in repo/`.env`/GitHub secrets.
+>
+> **Resume steps:**
+> 1. (User) Generate a reusable auth key: https://login.tailscale.com/admin/settings/keys → `richneo.co` → Generate (Reusable).
+> 2. Start VM + join: `az vm start -g arc-hybrid-lab -n cloud-vm` → SSH → `sudo tailscale up --authkey=<key>`.
+> 3. Verify: `multipass exec vm-01 -- sudo tailscale ping cloud-vm` + SSH over `100.x`.
+> 4. Deallocate VM.
 
 ---
 
