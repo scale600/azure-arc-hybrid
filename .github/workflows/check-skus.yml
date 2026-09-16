@@ -32,7 +32,7 @@ jobs:
 
       - name: List B-series sizes (available)
         run: |
-          echo "=== koreacentral ==="
-          az vm list-sizes -l koreacentral --query "[?contains(name,'Standard_B')].{name:name,vcpus:numberOfCores,memGB:memoryInMB}" -o table
-          echo "=== eastasia ==="
-          az vm list-sizes -l eastasia --query "[?contains(name,'Standard_B')].{name:name,vcpus:numberOfCores,memGB:memoryInMB}" -o table
+          for loc in eastasia koreacentral; do
+            echo "=== $loc (B1/B2 with restrictions) ==="
+            az vm list-skus -l "$loc" --query "[?contains(name,'Standard_B1')||contains(name,'Standard_B2')].{name:name, restricted:restrictions[0].reasonCode}" -o table
+          done
