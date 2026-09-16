@@ -136,10 +136,10 @@ Concrete, verifiable build items for the Azure Arc Hybrid Governance Lab, broken
 
 **Done when:** local VMs can ping/SSH the Azure VM over Tailscale.
 
-- [ ] Provision an Azure VM (B1ls, ~$2/month budget; deallocate when idle)
-- [ ] Install Tailscale on the Azure VM
-- [ ] Install Tailscale on `vm-01` and `vm-02`
-- [ ] Verify connectivity (ping/SSH over Tailscale `100.x` IPs)
+- [x] Provision an Azure VM (`Standard_D2als_v6`, koreacentral — B1ls capacity/zero-quota blocked; deallocate when idle)
+- [x] Install Tailscale on the Azure VM (v1.102.4 via cloud-init)
+- [x] Install Tailscale on `vm-01` and `vm-02`
+- [ ] Verify connectivity (ping/SSH over Tailscale `100.x` IPs) — blocked on Tailscale auth key
 - [ ] Deallocate the Azure VM when not in use (cost control)
 
 ---
@@ -157,4 +157,4 @@ Concrete, verifiable build items for the Azure Arc Hybrid Governance Lab, broken
 | M6 | CI/CD | ✅ |
 | M7 | Lynis + Ansible CIS | ✅ |
 | M8 | Presentation site | ✅ |
-| M9 | Hybrid networking (Tailscale + Azure VM) | ⬜ |
+| M9 | Hybrid networking (Tailscale + Azure VM) | 🔄 provisioned, Tailscale join pending |

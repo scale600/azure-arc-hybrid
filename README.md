@@ -50,7 +50,7 @@ Local Host (Apple Silicon M3 Pro)                         Azure
 │         Machine agent)          │                │  Log Analytics (free 5 GB)    │
 └────────────────────────────────┘                └────────────────────────────────┘
         │  Tailscale mesh VPN (100.x)
-        └──────────▶ Azure VM (B1ls) — hybrid networking, ~$2/month
+        └──────────▶ Azure VM (D2als_v6) — hybrid networking, ~$2/month
 ```
 
 **Responsibility boundary:**
@@ -72,7 +72,7 @@ Local Host (Apple Silicon M3 Pro)                         Azure
 | M6 | CI/CD | GitHub Actions terraform-ci (OIDC) | ✅ |
 | M7 | Security audit | Lynis + Ansible CIS hardening | ✅ |
 | M8 | Presentation site | Astro site on Azure Static Web Apps | ✅ |
-| M9 | Hybrid networking | Tailscale + Azure VM (B1ls) | ⏸️ capacity |
+| M9 | Hybrid networking | Tailscale + Azure VM (D2als_v6) | 🔄 provisioned, Tailscale join pending |
 
 ## Current status
 
@@ -99,7 +99,7 @@ Tailscale mesh verified: `ping` vm-01 ↔ vm-02 (0% packet loss, direct connecti
 | Azure Update Manager | ✅ assessment + weekly schedule (Sat 02:00 KST) |
 | Lynis security audit | ✅ hardening index 71 (both VMs, post CIS hardening) |
 | Presentation site (M8) | 🚀 live at `azure-arc-hybrid.techcloudup.com` (Azure SWA, auto-refresh CI) |
-| Azure VM (`cloud-vm`) | ⏸️ not provisioned (B-series capacity) |
+| Azure VM (`cloud-vm`) | ✅ provisioned (`Standard_D2als_v6`, koreacentral) · Tailscale installed, join pending auth key |
 
 ## Governance policies (M3)
 

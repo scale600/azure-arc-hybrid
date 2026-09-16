@@ -142,11 +142,11 @@ GitHub Actions (scheduled)            Azure Static Web Apps
 | GitHub Actions | **Free** | public repo |
 | Azure Static Web Apps | **Free** | static hosting + custom domain |
 | Tailscale | **Free** | mesh VPN (personal tier) |
-| Azure VM (B1ls) | **~$2/month** | cloud-side node; deallocate when idle |
+| Azure VM (D2als_v6) | **~$2/month** (deallocated) | cloud-side node; B1ls capacity/zero-quota blocked in subscription |
 
 > ⚠️ **Prerequisite for $0:** unrestricted heartbeat/perf-counter ingestion into Log Analytics can exceed 5GB, so the DCR must minimize collected data (only some Syslog errors + security events).
 >
-> 💰 **The only non-$0 item is the optional Azure VM** (~$2/month, B1ls) for hybrid networking. Everything else is free; the VM is deallocated when not in use.
+> 💰 **The only non-$0 item is the optional Azure VM** (~$2/month when deallocated) for hybrid networking. Everything else is free; the VM is deallocated when not in use. (B-series `B1ls` was the original target, but this subscription has no B-series capacity and zero `standardBasv2Family` quota — substituted with `Standard_D2als_v6` Dv6.)
 
 ---
 
@@ -163,7 +163,7 @@ GitHub Actions (scheduled)            Azure Static Web Apps
 | **M6** | GitHub Actions terraform-ci (OIDC) | `.github/workflows/terraform-ci.yml` | Free |
 | **M7** | Lynis audit + documentation | `scripts/cis-audit/`, `docs/` | Free |
 | **M8** | Static presentation site (Astro) + CI snapshots + Azure SWA deploy | `site/`, `.github/workflows/snapshot.yml` | Free |
-| **M9** | Hybrid networking: Azure VM (B1ls) + Tailscale mesh VPN | `cloud-vm`, Tailscale | ~$2/month |
+| **M9** | Hybrid networking: Azure VM (D2als_v6) + Tailscale mesh VPN | `cloud-vm`, Tailscale | ~$2/month |
 
 ---
 
