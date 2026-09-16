@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-16T16:14:44Z",
+  "generatedAt": "2026-09-16T21:06:10Z",
   "machines": [
     {
       "name": "vm-01",
@@ -23,14 +23,14 @@
   "policies": [
     {
       "name": "require-env-tag",
-      "compliant": 5,
-      "nonCompliant": 3,
+      "compliant": 10,
+      "nonCompliant": 4,
       "displayName": "Require env tag on resources",
       "effect": "deny"
     },
     {
       "name": "allowed-locations",
-      "compliant": 8,
+      "compliant": 14,
       "nonCompliant": 0,
       "displayName": "Allowed locations",
       "effect": "deny"
