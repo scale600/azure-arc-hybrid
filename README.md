@@ -76,19 +76,20 @@ Local Host (Apple Silicon M3 Pro)                         Azure
 
 ## Current status
 
-**M0 ✅ · M1 ✅ · M2 ✅ · M3 ✅ · M4 ✅ · M5 ✅ · M6 ✅ · M7 ✅ · M8 ✅ · Tailscale mesh ✅**
+**M0 ✅ · M1 ✅ · M2 ✅ · M3 🔄 · M4 ✅ · M5 ✅ · M6 ✅ · M7 ✅ · M8 ✅ · M9 ✅**
 
 ```
-Name    State    IPv4 (local)    IPv4 (Tailscale)   Image
-vm-01   Running  <local-ip>      <tailscale-ip>     Ubuntu 22.04 LTS
-vm-02   Running  <local-ip>      <tailscale-ip>     Ubuntu 22.04 LTS
+Name       State               IPv4 (Tailscale)   Image
+vm-01      Running             100.122.67.121     Ubuntu 22.04 LTS
+vm-02      Running             100.111.237.108    Ubuntu 22.04 LTS
+cloud-vm   Deallocated (idle)  100.119.185.44     Ubuntu 22.04 LTS (Azure)
 ```
 
-VM specs (each): 2 vCPU / 2 GB RAM / 8 GB disk — actual usage ~1.9 GiB disk, ~170 MiB RAM.
+Local VM specs (each): 2 vCPU / 2 GB RAM / 8 GB disk — actual usage ~1.9 GiB disk, ~170 MiB RAM. Azure VM: `Standard_D2als_v6` (2 vCPU / 4 GB).
 
-Tailscale mesh verified: `ping` vm-01 ↔ vm-02 (0% packet loss, direct connection).
+Tailscale mesh verified: `ping` + SSH over `100.x` between all 3 nodes (vm-01 ↔ vm-02 ↔ cloud-vm).
 
-> 🔒 IP addresses are stored in `.env` (gitignored) and shown here as placeholders.
+> 🔒 Azure connection info + IPs are in `.env` (gitignored). Tailscale `100.x` IPs are private to the tailnet.
 
 | Component | Status |
 |---|---|
@@ -108,7 +109,7 @@ Three resource-level Azure Policies are assigned to the `arc-hybrid-lab` resourc
 | Policy | Definition | Effect | Purpose |
 |---|---|---|---|
 | `require-env-tag` | *Require a tag on resources* | deny | Denies resources missing the `env` tag |
-| `allowed-locations` | *Allowed locations* | deny | Restricts resources to `koreacentral` |
+| `allowed-locations` | *Allowed locations* | deny | Restricts resources to `koreacentral` + `eastasia` |
 | `ama-audit-linux-arc` | *Linux Arc machines should have AMA installed* | audit | Flags Arc servers without the Azure Monitor Agent |
 
 > 💡 **Demo:** `vm-01` is tagged `env=lab` (compliant); `vm-02` is intentionally left untagged to surface as non-compliant in the Policy Compliance dashboard.
@@ -154,13 +155,14 @@ See [docs/CHECKLIST.md](docs/CHECKLIST.md) for the full, itemized build checklis
 ```
 azure-arc-hybrid/
 ├── terraform/                 # Azure IaC
-│   ├── main.tf                # RG + workspace + policy module
+│   ├── main.tf                # RG + workspace + policy + VM modules
 │   ├── variables.tf           # input variables
 │   ├── outputs.tf             # outputs
 │   ├── provider.tf            # azurerm provider
 │   └── modules/
 │       ├── resource-group/    # RG + tags
-│       └── policy/            # 3 policy assignments
+│       ├── policy/            # 3 policy assignments
+│       └── vm/                # M9: hybrid-networking VM (+ VNet/NSG/PIP)
 ├── scripts/
 │   ├── setup-vms.sh           # M0: install Multipass + create VMs
 │   ├── onboard-linux.sh       # M1: Arc onboarding (idempotent)
@@ -178,7 +180,12 @@ azure-arc-hybrid/
 ├── .github/workflows/
 │   ├── terraform-ci.yml       # M6: Terraform CI (OIDC, no secrets)
 │   ├── snapshot.yml           # M8: scheduled snapshot refresh
-│   └── deploy-site.yml        # M8: build + deploy to Azure SWA
+│   ├── deploy-site.yml        # M8: build + deploy to Azure SWA
+│   ├── bind-custom-domain.yml # M8: SWA custom domain bind (OIDC)
+│   ├── check-skus.yml         # M9: list deployable VM SKUs + quota
+│   ├── cleanup-vm.yml         # M9: delete orphaned VM networking
+│   ├── start-vm.yml           # M9: start cloud-vm + show public IP
+│   └── deallocate-vm.yml      # M9: deallocate cloud-vm (cost control)
 └── .env                       # Azure connection info (gitignored)
 ```
 

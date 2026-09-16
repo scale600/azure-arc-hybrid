@@ -71,6 +71,7 @@ Onboard 2 local VMs (simulating on-premises servers) to Azure Arc, and combine T
 - [ ] GitHub Actions runs `terraform plan/apply` via OIDC
 - [ ] Monthly Azure cost = $0 (verified in cost analysis)
 - [ ] Presentation site live at azure-arc-hybrid.techcloudup.com with auto-refreshed snapshots
+- [x] Hybrid networking verified: local VMs ping/SSH the Azure VM over Tailscale (`100.x`)
 
 ---
 
@@ -170,29 +171,38 @@ GitHub Actions (scheduled)            Azure Static Web Apps
 ## 8. Repository Structure
 
 ```
-azure-arc-hybrid-lab/
+azure-arc-hybrid/
 ├── terraform/
 │   ├── modules/
 │   │   ├── resource-group/       # RG + tags
-│   │   └── policy/               # policy assignments (3 resource-level)
+│   │   ├── policy/               # policy assignments (3 resource-level)
+│   │   └── vm/                   # M9: hybrid-networking VM (+ VNet/NSG/PIP)
 │   ├── main.tf
 │   ├── variables.tf
 │   └── terraform.tfvars.example
 ├── scripts/
 │   ├── setup-vms.sh              # M0: install Multipass + create VMs
-│   ├── onboard-linux.sh          # Arc onboarding (shared by 2 VMs)
-│   └── cis-audit/
-│       └── audit.sh              # Lynis run + report collection
+│   ├── onboard-linux.sh          # M1: Arc onboarding (shared by 2 VMs)
+│   └── snapshot.sh               # M8: az graph/policy → snapshot JSON
+├── ansible/
+│   ├── hosts.ini                 # M7: inventory (vm-01, vm-02)
+│   └── harden.yml                # M7: ansible-lockdown CIS playbook
 ├── site/                         # static presentation site (Astro)
 ├── docs/
 │   ├── PRD.md
 │   ├── TECH_STACK.md
 │   ├── CHECKLIST.md
-│   └── ARCHITECTURE.md
+│   └── lynis-report-vm-0{1,2}.dat  # M7: Lynis audit reports
 ├── .env                          # Azure connection info (gitignored)
 ├── .github/workflows/
-│   ├── terraform-ci.yml
-│   └── snapshot.yml              # az queries → snapshot JSON
+│   ├── terraform-ci.yml          # M6: Terraform CI (OIDC)
+│   ├── snapshot.yml              # M8: scheduled snapshot refresh
+│   ├── deploy-site.yml           # M8: build + deploy to Azure SWA
+│   ├── bind-custom-domain.yml    # M8: SWA custom domain bind
+│   ├── check-skus.yml            # M9: VM SKU/quota check
+│   ├── cleanup-vm.yml            # M9: delete orphaned VM networking
+│   ├── start-vm.yml              # M9: start cloud-vm + show public IP
+│   └── deallocate-vm.yml         # M9: deallocate cloud-vm
 └── README.md
 ```
 
@@ -228,4 +238,4 @@ A personal, hands-on project to explore hybrid governance with Azure Arc: simula
 | VM spec | 2 vCPU / 2GB / 8GB | 2 VMs total 4GB RAM; 8GB disk minimized for limited host storage |
 | Presentation | **Static site (Astro) on Azure Static Web Apps** | $0, custom domain via existing Cloudflare DNS, no Azure creds exposed |
 | Domain | **azure-arc-hybrid.techcloudup.com** | subdomain of techcloudup.com (DNS on Cloudflare) |
-| Hybrid networking | **Tailscale (free) + Azure VM (B1ls)** | mesh VPN for local↔Azure connectivity; VM ≤$2/month, deallocate when idle |
+| Hybrid networking | **Tailscale (free) + Azure VM (D2als_v6)** | mesh VPN for local↔Azure connectivity; VM ≤$2/month, deallocate when idle |

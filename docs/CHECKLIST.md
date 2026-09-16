@@ -1,8 +1,8 @@
 # Build Checklist
 
-Concrete, verifiable build items for the Azure Arc Hybrid Governance Lab, broken down from the PRD milestones (M0–M8).
+Concrete, verifiable build items for the Azure Arc Hybrid Governance Lab, broken down from the PRD milestones (M0–M9).
 
-> **Status:** `✅ M0 + M1 + M2 + M4 + M5 + M6 + M7 complete` · M3 assigned · Last updated 2026-09-16
+> **Status:** `✅ M0–M9 complete` · pending verification: M3 compliance eval, M4 patch results (~24h), M5 billing cycle · Last updated 2026-09-16
 >
 > Legend: `[ ]` = not done · `[x]` = done
 
@@ -14,8 +14,8 @@ Concrete, verifiable build items for the Azure Arc Hybrid Governance Lab, broken
 - [x] Apple Silicon macOS host (M3 Pro) with Multipass installed
 - [x] CLIs installed: `az`, `gh`, `terraform` (≥1.5), `ansible`
 - [x] GitHub repo `scale600/azure-arc-hybrid` cloned locally
-- [ ] Cloudflare account with access to the `techcloudup.com` zone
-- [ ] Tailscale account (free personal tier)
+- [x] Cloudflare account with access to the `techcloudup.com` zone
+- [x] Tailscale account (free personal tier)
 
 ---
 

@@ -18,7 +18,7 @@ Technology stack for the Azure Arc Hybrid Governance Lab. Everything is chosen t
 | Presentation | Astro + Tailwind CSS (static) | Free |
 | Hosting | Azure Static Web Apps (custom domain) + Cloudflare DNS | Free |
 | Networking | Tailscale (mesh VPN) | Free |
-| Cloud compute | Azure VM (B1ls) | ~$2/month |
+| Cloud compute | Azure VM (D2als_v6) | ~$2/month |
 | CI/CD | GitHub Actions (OIDC) | Free (public repo) |
 | VCS | Git / GitHub | Free |
 
@@ -65,7 +65,7 @@ Technology stack for the Azure Arc Hybrid Governance Lab. Everything is chosen t
 ## Networking
 
 - **Tailscale** — WireGuard-based mesh VPN (free personal tier)
-- **Azure VM** (B1ls) — cloud-side node for hybrid connectivity (~$2/month, deallocate when idle)
+- **Azure VM** (D2als_v6) — cloud-side node for hybrid connectivity (~$2/month, deallocate when idle)
 
 ## CI/CD & Version Control
 
