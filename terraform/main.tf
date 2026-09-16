@@ -25,7 +25,7 @@ module "policy" {
 module "vm" {
   source               = "./modules/vm"
   resource_group_name  = module.resource_group.name
-  location             = module.resource_group.location
+  location             = var.vm_location
   vm_name              = var.vm_name
   vm_size              = var.vm_size
   admin_ssh_public_key = var.admin_ssh_public_key
