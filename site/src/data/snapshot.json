@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-09-16T21:06:10Z",
+  "generatedAt": "2026-09-17T04:20:01Z",
   "machines": [
     {
       "name": "vm-01",
-      "status": "Connected",
+      "status": "Disconnected",
       "location": "koreacentral",
       "os": "Ubuntu 22.04 LTS",
       "kernel": "5.15.0-191-generic",
@@ -13,7 +13,7 @@
     },
     {
       "name": "vm-02",
-      "status": "Connected",
+      "status": "Disconnected",
       "location": "koreacentral",
       "os": "Ubuntu 22.04 LTS",
       "kernel": "5.15.0-191-generic",
@@ -23,14 +23,14 @@
   "policies": [
     {
       "name": "require-env-tag",
-      "compliant": 10,
+      "compliant": 11,
       "nonCompliant": 4,
       "displayName": "Require env tag on resources",
       "effect": "deny"
     },
     {
       "name": "allowed-locations",
-      "compliant": 14,
+      "compliant": 15,
       "nonCompliant": 0,
       "displayName": "Allowed locations",
       "effect": "deny"
