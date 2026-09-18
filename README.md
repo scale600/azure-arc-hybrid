@@ -1,5 +1,9 @@
 # Azure Arc Hybrid Governance Lab
 
+azure-arc-hybrid.techcloudup.com – Arc Hybrid Governance Lab
+Purpose: Present a hands-on demonstration of hybrid governance as code — onboarding 2 on-premises Ubuntu servers to Azure Arc and layering on patching, compliance, tagging, and RBAC using only free Azure services, surfaced through a CI-refreshed compliance dashboard.
+Core Tech: Azure (Arc, Policy, Update Manager, Log Analytics, Static Web Apps), Astro 5 + Tailwind CSS 4, Terraform (azurerm), Ansible (ansible-lockdown), Lynis, Multipass, Tailscale, GitHub Actions (OIDC).
+
 Build and demonstrate **hybrid governance as code** — patch, audit, tagging, and RBAC — by onboarding on-premises servers to Azure Arc. The entire governance stack runs at **$0/month** (only the optional hybrid-networking Azure VM adds ~$2/month).
 
 ## Overview
