@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-09-18T16:09:18Z",
+  "generatedAt": "2026-09-18T20:41:21Z",
   "machines": [
     {
       "name": "vm-01",
-      "status": "Connected",
+      "status": "Disconnected",
       "location": "koreacentral",
       "os": "Ubuntu 22.04 LTS",
       "kernel": "5.15.0-191-generic",
@@ -13,7 +13,7 @@
     },
     {
       "name": "vm-02",
-      "status": "Connected",
+      "status": "Disconnected",
       "location": "koreacentral",
       "os": "Ubuntu 22.04 LTS",
       "kernel": "5.15.0-191-generic",
